@@ -1684,3 +1684,4 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
 // Featured projects section split
 // Desktop folder grid sizes modified
 // Responsive handheld mode active
+// Mobile widgets rendered below app grid
