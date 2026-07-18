@@ -215,4 +215,4 @@ body.density-compact .reader-content .space-y-4 > * + * {
 body.density-compact .reader-content hr {
   margin-top: 0.75rem !important;
   margin-bottom: 0.75rem !important;
-}
+}// Typography overrides for compact mode
