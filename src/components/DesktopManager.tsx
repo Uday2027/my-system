@@ -703,7 +703,7 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
         </header>
 
         {/* Mobile Viewport / Main Container */}
-        <div className="flex-1 relative bg-neutral-950/5 p-4 overflow-y-auto">
+        <div className={`flex-1 relative bg-neutral-950/5 overflow-y-auto ${!openMobileApp ? 'p-4' : 'p-0'}`}>
           {!openMobileApp ? (
             <div className="space-y-6">
               {/* Home Screen App Grid */}
@@ -788,7 +788,7 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
             </div>
           ) : (
             /* Opened Application Window view (Maximized retro style) */
-            <div className="absolute inset-2 flex flex-col border border-foreground bg-background rounded-lg shadow-2xl overflow-hidden font-mono">
+            <div className="absolute inset-0 flex flex-col bg-background overflow-hidden font-mono">
               {/* Window Header / Titlebar */}
               <div className="h-8 bg-neutral-900/10 border-b border-foreground flex items-center justify-between px-3 select-none shrink-0">
                 <div className="flex items-center gap-2">
