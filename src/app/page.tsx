@@ -21,3 +21,4 @@ export default async function HomePage() {
     </div>
   );
 }
+/* Admin panel sizing overrides updated */
