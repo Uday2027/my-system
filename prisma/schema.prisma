@@ -1,0 +1,49 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Project {
+  id              String   @id @default(uuid())
+  title           String
+  description     String
+  longDescription String?
+  image           String?
+  githubUrl       String?
+  liveUrl         String?
+  tags            String   // Comma-separated tags
+  order           Int      @default(0)
+  featured        Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Skill {
+  id        String   @id @default(uuid())
+  name      String
+  category  String   // e.g., Frontend, Backend, Tools, Soft Skills
+  level     Int      @default(80) // 0-100 percentage
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Achievement {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  date        String   // e.g., "June 2026"
+  link        String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
