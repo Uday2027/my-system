@@ -687,16 +687,23 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
       <div className="min-h-screen bg-background text-foreground flex flex-col font-mono relative overflow-hidden select-none">
         
         {/* Mobile Top System Header */}
-        <header className="h-8 border-b border-border bg-card flex items-center justify-between px-4 shrink-0 text-[10px] uppercase font-bold tracking-wider z-50">
-          <div className="flex items-center gap-2">
+        <header className="h-8 border-b border-border bg-card flex items-center justify-between px-4 shrink-0 text-[10px] uppercase font-bold tracking-wider z-50 relative">
+          {/* Left Corner: Time + Status Dot */}
+          <div className="flex items-center gap-2 z-10">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
-            <span className="text-foreground">System 20.27</span>
+            <span className="text-foreground font-bold">{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}</span>
           </div>
-          <span className="text-foreground font-bold">{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}</span>
-          <div className="flex items-center gap-2 text-muted-foreground">
+
+          {/* Center / Middle: User Name */}
+          <span className="absolute left-1/2 -translate-x-1/2 text-foreground font-bold whitespace-nowrap">
+            Zubayer Hossain Uday
+          </span>
+
+          {/* Right Corner: Telemetries */}
+          <div className="flex items-center gap-2 text-muted-foreground z-10">
             <Wifi className="w-3 h-3 text-foreground" />
             <Battery className="w-4 h-4 text-foreground" />
           </div>
