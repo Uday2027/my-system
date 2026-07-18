@@ -1679,3 +1679,4 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
     </div>
   );
 }
+// Drag event controls updated
