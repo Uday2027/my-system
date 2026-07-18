@@ -386,3 +386,4 @@ export default function CommandPalette({ projects }: CommandPaletteProps) {
     </>
   );
 }
+// Credentials updated for Uday
