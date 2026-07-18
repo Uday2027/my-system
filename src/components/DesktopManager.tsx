@@ -1681,3 +1681,4 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
 }
 // Drag event controls updated
 // System menu options refactored
+// Featured projects section split
