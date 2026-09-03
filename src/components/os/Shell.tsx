@@ -3,6 +3,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import CrtOverlay from './CrtOverlay';
 import BootSequence from './BootSequence';
+import RadioPlayer from './RadioPlayer';
 import { hydrateSettings } from '@/lib/os/settings';
 
 const BOOT_KEY = 'zhuday.booted.v1';
@@ -55,6 +56,7 @@ export default function Shell({ counts, children }: ShellProps) {
     <>
       <CrtOverlay />
       {children}
+      {!booting && <RadioPlayer />}
       {booting && <BootSequence counts={counts} onDone={finishBoot} />}
     </>
   );

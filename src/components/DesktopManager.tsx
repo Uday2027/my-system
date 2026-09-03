@@ -54,6 +54,9 @@ interface WindowState {
   z: number;
   width: string;
   height: string;
+  minimized?: boolean;
+  maximized?: boolean;
+  prevGeom?: { x: number; y: number; width: string; height: string };
 }
 
 export default function DesktopManager({ projects, skills, achievements }: DesktopManagerProps) {
@@ -71,7 +74,8 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
   const [isSystemMenuOpen, setIsSystemMenuOpen] = useState(false);
   const [isSleeping, setIsSleeping] = useState(false);
   const [isShutdown, setIsShutdown] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
+  const isMuted = !settings.sound; // sound preference persisted in the settings store
+  const setIsMuted = (muted: boolean) => setSetting('sound', !muted);
   const [showBootModal, setShowBootModal] = useState(false); // boot handled by <Shell>/<BootSequence>
 
   // YouTube player states
@@ -290,8 +294,13 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
 
   const [topZ, setTopZ] = useState(10);
   const dragInfoRef = useRef<{ key: WindowKey; startX: number; startY: number; startWindowX: number; startWindowY: number } | null>(null);
+  const resizeInfoRef = useRef<{ key: WindowKey; startX: number; startY: number; startW: number; startH: number; edge: 'e' | 's' | 'se' } | null>(null);
   const dragIconRef = useRef<{ key: IconKey; startX: number; startY: number; startIconX: number; startIconY: number } | null>(null);
   const hasDraggedRef = useRef(false);
+  const [interactingKey, setInteractingKey] = useState<WindowKey | null>(null);
+  type SnapZone = { x: number; y: number; w: number; h: number };
+  const [snapHint, setSnapHint] = useState<SnapZone | null>(null);
+  const snapHintRef = useRef<SnapZone | null>(null);
 
   const [isMobile, setIsMobile] = useState(false);
   const [mobileOS, setMobileOS] = useState<'ios' | 'android'>('ios');
@@ -351,29 +360,65 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
   }, []);
 
   const openWindow = (key: WindowKey) => {
-    playSound('open');
+    const alreadyOpen = windows[key].open;
+    playSound(alreadyOpen ? 'click' : 'open');
     setWindows((prev) => {
-      const updated = {} as Record<WindowKey, WindowState>;
-      
-      // Close all other windows (only one open at a time)
-      (Object.keys(prev) as WindowKey[]).forEach((k) => {
-        updated[k] = { ...prev[k], open: false };
-      });
+      const updated = { ...prev };
+      const cur = prev[key];
 
-      // Center the opened window in the screen viewport
-      const widthNum = parseInt(prev[key].width) || 450;
-      const heightNum = parseInt(prev[key].height) || 350;
-      const centerX = Math.max(10, (window.innerWidth - widthNum) / 2);
-      const centerY = Math.max(50, (window.innerHeight - heightNum) / 2);
+      if (cur.open) {
+        // Re-focus / un-minimize an already-open window; leave others alone.
+        updated[key] = { ...cur, minimized: false, z: topZ + 1 };
+        return updated;
+      }
 
-      updated[key] = { 
-        ...prev[key], 
-        open: true, 
-        x: centerX, 
-        y: centerY, 
-        z: topZ + 1 
+      // Cascade new windows off the last-focused one so multiple can stack.
+      const openCount = (Object.keys(prev) as WindowKey[]).filter((k) => prev[k].open).length;
+      const widthNum = parseInt(cur.width) || 450;
+      const heightNum = parseInt(cur.height) || 350;
+      const baseX = Math.max(10, (window.innerWidth - widthNum) / 2);
+      const baseY = Math.max(50, (window.innerHeight - heightNum) / 2);
+      const offset = openCount * 28;
+
+      updated[key] = {
+        ...cur,
+        open: true,
+        minimized: false,
+        x: Math.min(baseX + offset, window.innerWidth - 120),
+        y: Math.min(baseY + offset, window.innerHeight - 120),
+        z: topZ + 1,
       };
       return updated;
+    });
+    setTopZ((z) => z + 1);
+    setActiveWindow(key);
+  };
+
+  const minimizeWindow = (key: WindowKey) => {
+    playSound('close');
+    setWindows((prev) => ({ ...prev, [key]: { ...prev[key], minimized: true } }));
+  };
+
+  const toggleMaximize = (key: WindowKey) => {
+    playSound('click');
+    setWindows((prev) => {
+      const w = prev[key];
+      if (w.maximized && w.prevGeom) {
+        return { ...prev, [key]: { ...w, maximized: false, ...w.prevGeom, prevGeom: undefined } };
+      }
+      return {
+        ...prev,
+        [key]: {
+          ...w,
+          maximized: true,
+          prevGeom: { x: w.x, y: w.y, width: w.width, height: w.height },
+          x: 8,
+          y: 40,
+          width: `${window.innerWidth - 16}px`,
+          height: `${window.innerHeight - 96}px`,
+          z: topZ + 1,
+        },
+      };
     });
     setTopZ((z) => z + 1);
     setActiveWindow(key);
@@ -404,6 +449,7 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
     // Only drag on titlebar
     const target = e.target as HTMLElement;
     if (!target.closest('.window-titlebar')) return;
+    if (windows[key].maximized) return; // don't drag a maximized window
 
     dragInfoRef.current = {
       key,
@@ -412,6 +458,23 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
       startWindowX: windows[key].x,
       startWindowY: windows[key].y,
     };
+    setInteractingKey(key);
+  };
+
+  const handleResizeMouseDown = (e: React.MouseEvent, key: WindowKey, edge: 'e' | 's' | 'se') => {
+    e.stopPropagation();
+    e.preventDefault();
+    focusWindow(key);
+    const w = windows[key];
+    resizeInfoRef.current = {
+      key,
+      startX: e.clientX,
+      startY: e.clientY,
+      startW: parseInt(w.width) || 450,
+      startH: parseInt(w.height) || 350,
+      edge,
+    };
+    setInteractingKey(key);
   };
 
   const handleIconMouseDown = (e: React.MouseEvent, key: IconKey) => {
@@ -433,9 +496,9 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
         const dx = e.clientX - drag.startX;
         const dy = e.clientY - drag.startY;
 
-        // Keep windows inside reasonable viewport boundaries
-        const newX = Math.max(10, drag.startWindowX + dx);
-        const newY = Math.max(50, drag.startWindowY + dy);
+        // Keep at least a sliver of the title bar reachable
+        const newX = Math.max(-40, drag.startWindowX + dx);
+        const newY = Math.max(34, drag.startWindowY + dy);
 
         setWindows((prev) => ({
           ...prev,
@@ -443,6 +506,28 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
             ...prev[drag.key],
             x: newX,
             y: newY,
+          },
+        }));
+
+        // Edge-snap hint
+        const iw = window.innerWidth;
+        const ih = window.innerHeight;
+        let hint: SnapZone | null = null;
+        if (e.clientX <= 6) hint = { x: 0, y: 32, w: Math.round(iw / 2), h: ih - 128 };
+        else if (e.clientX >= iw - 6) hint = { x: Math.round(iw / 2), y: 32, w: Math.round(iw / 2), h: ih - 128 };
+        else if (e.clientY <= 4) hint = { x: 8, y: 40, w: iw - 16, h: ih - 128 };
+        snapHintRef.current = hint;
+        setSnapHint(hint);
+      } else if (resizeInfoRef.current) {
+        const r = resizeInfoRef.current;
+        const dx = e.clientX - r.startX;
+        const dy = e.clientY - r.startY;
+        setWindows((prev) => ({
+          ...prev,
+          [r.key]: {
+            ...prev[r.key],
+            width: r.edge !== 's' ? `${Math.max(280, r.startW + dx)}px` : prev[r.key].width,
+            height: r.edge !== 'e' ? `${Math.max(180, r.startH + dy)}px` : prev[r.key].height,
           },
         }));
       } else if (dragIconRef.current) {
@@ -465,13 +550,35 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
     };
 
     const handleMouseUp = () => {
+      const drag = dragInfoRef.current;
+      const zone = snapHintRef.current;
+      if (drag && zone) {
+        setWindows((prev) => ({
+          ...prev,
+          [drag.key]: {
+            ...prev[drag.key],
+            x: zone.x,
+            y: zone.y,
+            width: `${zone.w}px`,
+            height: `${zone.h}px`,
+          },
+        }));
+      }
       dragInfoRef.current = null;
+      resizeInfoRef.current = null;
       dragIconRef.current = null;
+      snapHintRef.current = null;
+      setSnapHint(null);
+      setInteractingKey(null);
     };
 
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mouseup', handleMouseUp);
-  }, [windows, iconPositions]);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, []);
 
   const renderMobileAppContent = (key: WindowKey) => {
     if (key === 'about') {
@@ -993,9 +1100,10 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
         {/* ── DESKTOP WINDOWS RENDERER ── */}
         {(Object.keys(windows) as WindowKey[]).map((key) => {
           const w = windows[key];
-          if (!w.open) return null;
+          if (!w.open || w.minimized) return null;
 
           const isActive = activeWindow === key;
+          const isInteracting = interactingKey === key;
 
           return (
             <div
@@ -1008,23 +1116,41 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                 zIndex: w.z,
                 width: w.width,
                 height: w.height,
+                transition: isInteracting
+                  ? 'none'
+                  : 'left 0.18s cubic-bezier(.2,.9,.2,1), top 0.18s cubic-bezier(.2,.9,.2,1), width 0.18s cubic-bezier(.2,.9,.2,1), height 0.18s cubic-bezier(.2,.9,.2,1)',
               }}
-              className={`flex flex-col border border-foreground bg-background rounded-lg shadow-2xl overflow-hidden font-mono max-w-[95vw] max-h-[85vh] ${
-                isActive ? 'ring-2 ring-foreground/20' : 'opacity-85'
-              }`}
+              className={`flex flex-col border border-foreground bg-background rounded-lg shadow-2xl overflow-hidden font-mono max-w-[98vw] ${
+                w.maximized ? '' : 'max-h-[92vh]'
+              } ${isActive ? 'ring-2 ring-foreground/20' : 'opacity-90'}`}
             >
               {/* Window Titlebar */}
-              <div 
+              <div
                 className="h-8 bg-neutral-900/10 border-b border-foreground flex items-center justify-between px-3 select-none cursor-move window-titlebar shrink-0"
+                onDoubleClick={() => toggleMaximize(key)}
               >
                 <div className="flex items-center gap-2">
-                  {/* Close Box */}
-                  <button 
+                  {/* Traffic lights: close / minimize / maximize */}
+                  <button
                     onClick={() => closeWindow(key)}
                     className="w-5 h-5 border border-foreground rounded bg-background flex items-center justify-center text-[10px] font-bold hover:bg-foreground hover:text-background transition-colors cursor-pointer"
-                    title="Close Window"
+                    title="Close"
                   >
                     ✕
+                  </button>
+                  <button
+                    onClick={() => minimizeWindow(key)}
+                    className="w-5 h-5 border border-foreground rounded bg-background flex items-center justify-center text-[10px] font-bold hover:bg-foreground hover:text-background transition-colors cursor-pointer"
+                    title="Minimize"
+                  >
+                    –
+                  </button>
+                  <button
+                    onClick={() => toggleMaximize(key)}
+                    className="w-5 h-5 border border-foreground rounded bg-background flex items-center justify-center text-[9px] font-bold hover:bg-foreground hover:text-background transition-colors cursor-pointer"
+                    title={w.maximized ? 'Restore' : 'Maximize'}
+                  >
+                    {w.maximized ? '❐' : '□'}
                   </button>
                   {/* Title */}
                   <span className="text-xs font-semibold tracking-wider text-foreground">
@@ -1445,9 +1571,44 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                   </div>
                 )}
               </div>
+
+              {/* Resize handles (hidden while maximized) */}
+              {!w.maximized && (
+                <>
+                  <div
+                    onMouseDown={(e) => handleResizeMouseDown(e, key, 'e')}
+                    className="absolute top-8 right-0 bottom-3 w-1.5 cursor-ew-resize"
+                  />
+                  <div
+                    onMouseDown={(e) => handleResizeMouseDown(e, key, 's')}
+                    className="absolute left-3 right-3 bottom-0 h-1.5 cursor-ns-resize"
+                  />
+                  <div
+                    onMouseDown={(e) => handleResizeMouseDown(e, key, 'se')}
+                    className="absolute right-0 bottom-0 w-4 h-4 cursor-nwse-resize"
+                    title="Resize"
+                  >
+                    <div className="absolute right-1 bottom-1 w-2 h-2 border-b border-r border-foreground/50" />
+                  </div>
+                </>
+              )}
             </div>
           );
         })}
+
+        {/* Snap zone ghost */}
+        {snapHint && (
+          <div
+            className="pointer-events-none absolute rounded-lg border-2 border-dashed border-foreground/40 bg-foreground/5 z-[99998]"
+            style={{
+              left: `${snapHint.x}px`,
+              top: `${snapHint.y}px`,
+              width: `${snapHint.w}px`,
+              height: `${snapHint.h}px`,
+              transition: 'all 0.12s ease',
+            }}
+          />
+        )}
       </div>
       {/* ── BOTTOM DESKTOP TASKBAR ── */}
       <footer className="fixed bottom-0 left-0 right-0 h-10 border-t border-border bg-card flex items-center justify-between px-4 z-[9999] text-xs font-mono select-none">
@@ -1543,7 +1704,8 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
           {(Object.keys(windows) as WindowKey[]).map((key) => {
             const w = windows[key];
             const isOpen = w.open;
-            const isActive = activeWindow === key && isOpen;
+            const isMin = !!w.minimized;
+            const isActive = activeWindow === key && isOpen && !isMin;
 
             let displayName = '';
             if (key === 'about') displayName = 'about_me.txt';
@@ -1559,10 +1721,10 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
               <button
                 key={key}
                 onClick={() => {
-                  if (!isOpen) {
-                    openWindow(key);
+                  if (!isOpen || isMin) {
+                    openWindow(key); // opens, or restores + focuses a minimized window
                   } else if (isActive) {
-                    closeWindow(key);
+                    minimizeWindow(key);
                   } else {
                     focusWindow(key);
                   }
@@ -1570,13 +1732,15 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                 className={`px-3 py-1 border rounded transition-colors text-[10px] flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
                   isActive
                     ? 'bg-foreground text-background border-foreground font-semibold'
+                    : isMin
+                    ? 'bg-neutral-900/5 text-muted-foreground border-dashed border-foreground/30 italic'
                     : isOpen
                     ? 'bg-card text-foreground border-foreground/30 font-medium'
                     : 'bg-neutral-900/5 text-muted-foreground border-border hover:border-muted-foreground/30 hover:text-foreground'
                 }`}
               >
                 {/* Active Indicator dot */}
-                {isOpen && <span className={`w-1 h-1 rounded-full ${isActive ? 'bg-background' : 'bg-foreground'}`} />}
+                {isOpen && <span className={`w-1 h-1 rounded-full ${isActive ? 'bg-background' : isMin ? 'bg-muted-foreground' : 'bg-foreground'}`} />}
                 <span>{displayName}</span>
               </button>
             );
