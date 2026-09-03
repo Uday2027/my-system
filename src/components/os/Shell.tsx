@@ -47,10 +47,37 @@ export default function Shell({ counts, children }: ShellProps) {
     }
   }
 
+  function enterFullscreen() {
+    const el = document.documentElement;
+    if (!document.fullscreenElement && el.requestFullscreen) {
+      el.requestFullscreen().catch(() => {
+        /* denied / unsupported — ignore */
+      });
+    }
+  }
+
   const finishBoot = () => {
     markBooted();
+    enterFullscreen();
     setBooting(false);
   };
+
+  // Sessions that skip the boot screen (returning visit / reduced-motion) still
+  // get fullscreen on their first interaction with the page.
+  useEffect(() => {
+    if (booting) return;
+    const once = () => {
+      enterFullscreen();
+      window.removeEventListener('pointerdown', once);
+      window.removeEventListener('keydown', once);
+    };
+    window.addEventListener('pointerdown', once);
+    window.addEventListener('keydown', once);
+    return () => {
+      window.removeEventListener('pointerdown', once);
+      window.removeEventListener('keydown', once);
+    };
+  }, [booting]);
 
   return (
     <>
