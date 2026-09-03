@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSettings, type Crt } from '@/lib/os/settings';
+import { useIsMobile } from '@/lib/os/useIsMobile';
 
 /**
  * Full-screen CRT treatment, driven by the `crt` setting ('off' | 'subtle' | 'full').
@@ -12,6 +13,7 @@ import { useSettings, type Crt } from '@/lib/os/settings';
  */
 export default function CrtOverlay() {
   const { crt } = useSettings();
+  const isMobile = useIsMobile();
   const [reduced, setReduced] = useState(false);
   const [lowPower, setLowPower] = useState(false);
 
@@ -41,6 +43,16 @@ export default function CrtOverlay() {
   }, [level]);
 
   if (level === 'off') return null;
+
+  // Mobile: scanlines + vignette only — no flicker / glare / roll.
+  if (isMobile) {
+    return (
+      <div className="crt-root" aria-hidden="true">
+        <div className="crt-scanlines" />
+        <div className="crt-vignette" />
+      </div>
+    );
+  }
 
   return (
     <div className="crt-root" aria-hidden="true">

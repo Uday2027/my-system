@@ -3,8 +3,10 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import CrtOverlay from './CrtOverlay';
 import BootSequence from './BootSequence';
+import MobileBoot from './MobileBoot';
 import RadioPlayer from './RadioPlayer';
 import { hydrateSettings } from '@/lib/os/settings';
+import { useIsMobile } from '@/lib/os/useIsMobile';
 
 const BOOT_KEY = 'zhuday.booted.v1';
 
@@ -24,6 +26,7 @@ interface ShellProps {
  */
 export default function Shell({ counts, children }: ShellProps) {
   const [booting, setBooting] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     hydrateSettings();
@@ -82,8 +85,13 @@ export default function Shell({ counts, children }: ShellProps) {
     <>
       <CrtOverlay />
       {children}
-      {!booting && <RadioPlayer />}
-      {booting && <BootSequence counts={counts} onEnter={enterFullscreen} onDone={finishBoot} />}
+      {!booting && !isMobile && <RadioPlayer />}
+      {booting &&
+        (isMobile ? (
+          <MobileBoot counts={counts} onEnter={enterFullscreen} onDone={finishBoot} />
+        ) : (
+          <BootSequence counts={counts} onEnter={enterFullscreen} onDone={finishBoot} />
+        ))}
     </>
   );
 }

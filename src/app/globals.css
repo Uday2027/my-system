@@ -345,8 +345,19 @@ body.density-compact .reader-content hr {
   .crt-flicker,
   .crt-roll,
   .crt-boot-flash,
-  .crt-caret {
+  .crt-caret,
+  .mobile-app-in {
     animation: none !important;
   }
+}
+
+/* Mobile: zoom-in when opening an app from the home grid */
+.mobile-app-in {
+  animation: mobile-app-in 0.24s cubic-bezier(0.2, 0.9, 0.2, 1);
+  transform-origin: center 40%;
+}
+@keyframes mobile-app-in {
+  0% { opacity: 0; transform: scale(0.88); }
+  100% { opacity: 1; transform: scale(1); }
 }
 

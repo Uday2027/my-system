@@ -852,88 +852,71 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                 ))}
               </div>
 
-              {/* Retro Welcome Card Widget */}
-              <div className="mt-8 border-2 border-foreground bg-card p-4 font-mono text-xs text-foreground space-y-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mx-2">
-                <div className="flex items-center gap-2 border-b border-foreground pb-2">
-                  <span className="w-2 h-2 bg-foreground rounded-full" />
-                  <span className="font-bold uppercase tracking-wider text-[10px]">Welcome Message</span>
+              {/* Compact "available" pill + quick links */}
+              <div className="mt-8 mx-2 flex flex-col items-center gap-3">
+                <div className="inline-flex items-center gap-2 rounded-full border border-foreground/40 bg-card px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider text-foreground shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                  </span>
+                  Available for work
                 </div>
-                <div className="space-y-2.5 leading-relaxed font-sans">
-                  <p className="font-bold text-foreground text-[13px] font-mono">Welcome to my space!</p>
-                  <p className="text-muted-foreground text-[11px] flex items-center gap-2 font-mono">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                    </span>
-                    <span>Status: <span className="text-emerald-500 font-bold">AVAILABLE FOR OPPORTUNITIES</span></span>
-                  </p>
-                  <p className="text-muted-foreground text-[11px]">
-                    I'm <span className="text-foreground font-semibold">Zubayer Hossain Uday</span>, a Full Stack Software Engineer.
-                  </p>
-                  <p className="text-muted-foreground text-[11px]">
-                    Explore my projects, experience, and tech stack by tapping the folders and apps above.
-                  </p>
-                  <p className="text-muted-foreground text-[11px]">
-                    If you are on a desktop, you can also double-click desktop icons, drag files, or execute commands inside the <span className="text-foreground font-medium font-mono">terminal.sh</span> shell.
-                  </p>
-                </div>
-              </div>
-
-              {/* Retro Contact Card Widget */}
-              <div className="mt-4 border-2 border-foreground bg-card p-4 font-mono text-xs text-foreground space-y-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mx-2">
-                <div className="flex items-center gap-2 border-b border-foreground pb-2">
-                  <span className="w-2 h-2 bg-foreground rounded-full" />
-                  <span className="font-bold uppercase tracking-wider text-[10px]">Contact</span>
-                </div>
-                <div className="space-y-2.5 text-[11px] leading-relaxed font-mono">
-                  <div className="flex justify-between border-b border-border pb-1.5">
-                    <span className="text-muted-foreground">Email:</span>
-                    <a href="mailto:zubayerhossain1009@gmail.com" className="text-foreground hover:underline flex items-center gap-1"><Mail className="w-3 h-3 shrink-0" /> zubayerhossain1009@gmail.com</a>
-                  </div>
-                  <div className="flex justify-between border-b border-border pb-1.5">
-                    <span className="text-muted-foreground">GitHub:</span>
-                    <a href="https://github.com/Uday2027" target="_blank" rel="noopener noreferrer" className="text-foreground hover:underline flex items-center gap-1"><Github className="w-3 h-3" /> github.com/Uday2027</a>
-                  </div>
-                  <div className="flex justify-between border-b border-border pb-1.5">
-                    <span className="text-muted-foreground">LinkedIn:</span>
-                    <a href="https://www.linkedin.com/in/zubayer-hossain-uday-3481841bb/" target="_blank" rel="noopener noreferrer" className="text-foreground flex items-center gap-1 min-w-0 hover:underline max-w-[60%] text-right"><Linkedin className="w-3 h-3 shrink-0" /> <span className="truncate">linkedin.com/in/...</span></a>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Location:</span>
-                    <span className="text-foreground">Dhaka, Bangladesh</span>
-                  </div>
+                <p className="text-center font-mono text-[10px] leading-relaxed text-muted-foreground">
+                  Zubayer Hossain Uday · Full Stack Software Engineer
+                  <br />
+                  Tap an app above to explore.
+                </p>
+                <div className="flex items-center gap-4 font-mono text-[11px] text-muted-foreground">
+                  <a href="mailto:zubayerhossain1009@gmail.com" aria-label="Email" className="hover:text-foreground">
+                    <Mail className="h-4 w-4" />
+                  </a>
+                  <a href="https://github.com/Uday2027" target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="hover:text-foreground">
+                    <Github className="h-4 w-4" />
+                  </a>
+                  <a href="https://www.linkedin.com/in/zubayer-hossain-uday-3481841bb/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:text-foreground">
+                    <Linkedin className="h-4 w-4" />
+                  </a>
                 </div>
               </div>
             </div>
           ) : (
-            /* Opened Application Window view (Maximized retro style) */
-            <div className="absolute inset-0 flex flex-col bg-background overflow-hidden font-mono">
-              {/* Window Header / Titlebar */}
-              <div className="h-8 bg-neutral-900/10 border-b border-foreground flex items-center justify-between px-3 select-none shrink-0">
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => { setOpenMobileApp(null); playSound('close'); }}
-                    className="w-5 h-5 border border-foreground rounded bg-background flex items-center justify-center text-[10px] font-bold hover:bg-foreground hover:text-background transition-colors cursor-pointer"
-                    title="Close Window"
-                  >
-                    ✕
-                  </button>
-                  <span className="text-xs font-semibold tracking-wider text-foreground capitalize">
-                    {openMobileApp === 'about' ? 'about_me.txt' : openMobileApp}
-                  </span>
-                </div>
-                <div className="flex flex-col gap-[2px] w-12 py-1 select-none pointer-events-none opacity-40">
-                  <div className="h-[1px] bg-foreground w-full" />
-                  <div className="h-[1px] bg-foreground w-full" />
-                  <div className="h-[1px] bg-foreground w-full" />
-                </div>
+            /* Opened Application view — zooms in from the tapped icon */
+            <div
+              key={openMobileApp}
+              className="absolute inset-0 flex flex-col bg-background overflow-hidden font-mono mobile-app-in"
+            >
+              {/* App Header */}
+              <div className="h-9 bg-neutral-900/10 border-b border-foreground flex items-center justify-between px-3 select-none shrink-0">
+                <button
+                  onClick={() => { setOpenMobileApp(null); playSound('close'); }}
+                  className="flex items-center gap-1.5 text-[11px] font-semibold text-foreground active:opacity-60"
+                  title="Back"
+                >
+                  <span className="text-sm leading-none">‹</span> Home
+                </button>
+                <span className="text-xs font-semibold tracking-wider text-foreground capitalize">
+                  {openMobileApp === 'about' ? 'about_me.txt' : openMobileApp}
+                </span>
+                <span className="w-10" />
               </div>
-              {/* Window Body Content Area */}
+              {/* App Body */}
               <div className={`flex-1 overflow-y-auto p-4 select-text bg-background text-foreground text-xs leading-relaxed window-body ${openMobileApp !== 'shell' ? 'reader-content' : 'font-mono'}`}>
                 {renderMobileAppContent(openMobileApp)}
               </div>
             </div>
           )}
+        </div>
+
+        {/* Bottom home indicator — tap / swipe up to go home */}
+        <div
+          onClick={() => { if (openMobileApp) { setOpenMobileApp(null); playSound('close'); } }}
+          onTouchEnd={(e) => {
+            const t = e.changedTouches[0];
+            if (t && openMobileApp) { setOpenMobileApp(null); playSound('close'); }
+          }}
+          className="shrink-0 h-8 flex items-center justify-center bg-card border-t border-border z-50"
+        >
+          <span className="h-1 w-28 rounded-full bg-foreground/40" />
         </div>
       </div>
     );
