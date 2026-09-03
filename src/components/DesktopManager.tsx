@@ -4,10 +4,11 @@ import { useState, useEffect, useRef } from 'react';
 import { 
   Folder, FileText, Terminal as TerminalIcon, Image as ImageIcon,
   User, Sliders, Menu, X, Minimize2, Calendar, Mail, ExternalLink, ArrowUpRight,
-  Battery, BatteryCharging, Wifi, WifiOff, Volume2, VolumeX, Tv, Github, Linkedin
+  Battery, BatteryCharging, Wifi, WifiOff, Volume2, VolumeX, Tv, Github, Linkedin, Gamepad2
 } from 'lucide-react';
 import FloatingTerminal from './FloatingTerminal';
 import AsciiArtLab from './AsciiArtLab';
+import SnakeGame from './apps/SnakeGame';
 import ProjectList from './ProjectList';
 import { toast } from 'sonner';
 import { useSettings, setSetting, type Crt } from '@/lib/os/settings';
@@ -42,7 +43,7 @@ interface DesktopManagerProps {
   achievements: Achievement[];
 }
 
-type WindowKey = 'about' | 'projects' | 'skills' | 'experience' | 'contact' | 'shell' | 'artlab' | 'youtube';
+type WindowKey = 'about' | 'projects' | 'skills' | 'experience' | 'contact' | 'shell' | 'artlab' | 'youtube' | 'snake';
 type FontOption = 'sans' | 'serif' | 'mono';
 type ThemeOption = 'ink' | 'paper' | 'sepia';
 type DensityOption = 'standard' | 'compact';
@@ -276,9 +277,10 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
     shell: { open: false, x: 0, y: 0, z: 1, width: '500px', height: '360px' },
     artlab: { open: false, x: 0, y: 0, z: 1, width: '550px', height: '420px' },
     youtube: { open: false, x: 0, y: 0, z: 1, width: '560px', height: '440px' },
+    snake: { open: false, x: 0, y: 0, z: 1, width: '440px', height: '520px' },
   });
 
-  type IconKey = 'about' | 'projects' | 'skills' | 'experience' | 'contact' | 'shell' | 'artlab' | 'youtube';
+  type IconKey = 'about' | 'projects' | 'skills' | 'experience' | 'contact' | 'shell' | 'artlab' | 'youtube' | 'snake';
   interface IconPosition { x: number; y: number; }
 
   const [iconPositions, setIconPositions] = useState<Record<IconKey, IconPosition>>({
@@ -290,6 +292,7 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
     shell: { x: 24, y: 474 },
     artlab: { x: 24, y: 564 },
     youtube: { x: 24, y: 654 },
+    snake: { x: 24, y: 744 },
   });
 
   const [topZ, setTopZ] = useState(10);
@@ -581,6 +584,9 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
   }, []);
 
   const renderMobileAppContent = (key: WindowKey) => {
+    if (key === 'snake') {
+      return <SnakeGame />;
+    }
     if (key === 'about') {
       return (
         <div className="space-y-6 reader-content">
@@ -836,6 +842,7 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                   { key: 'shell', label: 'terminal.sh', Icon: TerminalIcon },
                   { key: 'artlab', label: 'art_lab.app', Icon: ImageIcon },
                   { key: 'youtube', label: 'retro_tv.app', Icon: Tv },
+                  { key: 'snake', label: 'snake.game', Icon: Gamepad2 },
                 ].map((app) => (
                   <div
                     key={app.key}
@@ -1053,6 +1060,7 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
           else if (key === 'shell') { iconName = 'terminal.sh'; IconComponent = TerminalIcon; }
           else if (key === 'artlab') { iconName = 'art_lab.app'; IconComponent = ImageIcon; }
           else if (key === 'youtube') { iconName = 'retro_tv.app'; IconComponent = Tv; }
+          else if (key === 'snake') { iconName = 'snake.game'; IconComponent = Gamepad2; }
 
           return (
             <div
@@ -1145,6 +1153,7 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                     {key === 'shell' && 'terminal.sh'}
                     {key === 'artlab' && 'art_lab.app'}
                     {key === 'youtube' && 'retro_tv.app'}
+                    {key === 'snake' && 'snake.game'}
                   </span>
                 </div>
                 {/* Visual drag indicators */}
@@ -1384,6 +1393,8 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                 {key === 'artlab' && (
                   <AsciiArtLab />
                 )}
+
+                {key === 'snake' && <SnakeGame />}
 
                 {key === 'youtube' && (
                   <div className="space-y-4 font-mono text-xs flex flex-col h-full bg-neutral-950 p-2 border border-foreground rounded">
@@ -1642,6 +1653,7 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                         shell: { x: 24, y: 474 },
                         artlab: { x: 24, y: 564 },
                         youtube: { x: 24, y: 654 },
+                        snake: { x: 24, y: 744 },
                       });
                       toast.success("Desktop icons reset to default.");
                     }}
@@ -1699,6 +1711,7 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
             if (key === 'shell') displayName = 'terminal.sh';
             if (key === 'artlab') displayName = 'art_lab.app';
             if (key === 'youtube') displayName = 'retro_tv.app';
+            if (key === 'snake') displayName = 'snake.game';
 
             return (
               <button
