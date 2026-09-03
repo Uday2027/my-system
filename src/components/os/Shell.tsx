@@ -58,7 +58,6 @@ export default function Shell({ counts, children }: ShellProps) {
 
   const finishBoot = () => {
     markBooted();
-    enterFullscreen();
     setBooting(false);
   };
 
@@ -84,7 +83,7 @@ export default function Shell({ counts, children }: ShellProps) {
       <CrtOverlay />
       {children}
       {!booting && <RadioPlayer />}
-      {booting && <BootSequence counts={counts} onDone={finishBoot} />}
+      {booting && <BootSequence counts={counts} onEnter={enterFullscreen} onDone={finishBoot} />}
     </>
   );
 }
