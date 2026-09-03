@@ -10,6 +10,7 @@ import FloatingTerminal from './FloatingTerminal';
 import AsciiArtLab from './AsciiArtLab';
 import ProjectList from './ProjectList';
 import { toast } from 'sonner';
+import { useSettings, setSetting, type Crt } from '@/lib/os/settings';
 
 interface Project {
   id: string;
@@ -56,9 +57,13 @@ interface WindowState {
 }
 
 export default function DesktopManager({ projects, skills, achievements }: DesktopManagerProps) {
-  const [theme, setTheme] = useState<ThemeOption>('ink');
-  const [font, setFont] = useState<FontOption>('sans');
-  const [density, setDensity] = useState<DensityOption>('standard');
+  const settings = useSettings();
+  const theme = settings.tone as ThemeOption;
+  const font = settings.typography as FontOption;
+  const density = settings.density as DensityOption;
+  const setTheme = (t: ThemeOption) => setSetting('tone', t);
+  const setFont = (f: FontOption) => setSetting('typography', f);
+  const setDensity = (d: DensityOption) => setSetting('density', d);
   const [activeWindow, setActiveWindow] = useState<WindowKey>('about');
   const [timeStr, setTimeStr] = useState('');
   
@@ -67,7 +72,7 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
   const [isSleeping, setIsSleeping] = useState(false);
   const [isShutdown, setIsShutdown] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-  const [showBootModal, setShowBootModal] = useState(true);
+  const [showBootModal, setShowBootModal] = useState(false); // boot handled by <Shell>/<BootSequence>
 
   // YouTube player states
   const [ytUrl, setYtUrl] = useState('');
@@ -877,6 +882,21 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                     className="px-3 py-1 hover:bg-white hover:text-black cursor-pointer rounded text-[10px] capitalize text-white"
                   >
                     {d}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="relative group py-1">
+              <span className="hover:text-foreground cursor-pointer">CRT</span>
+              <div className="absolute left-0 mt-1 hidden group-hover:block bg-neutral-900 border border-white/5 rounded shadow-2xl p-1 w-28 z-[10001]">
+                {(['off', 'subtle', 'full'] as Crt[]).map((c) => (
+                  <div
+                    key={c}
+                    onClick={() => { setSetting('crt', c); playSound('click'); }}
+                    className={`px-3 py-1 hover:bg-white hover:text-black cursor-pointer rounded text-[10px] capitalize ${settings.crt === c ? 'text-white bg-white/10' : 'text-white'}`}
+                  >
+                    {c}
                   </div>
                 ))}
               </div>

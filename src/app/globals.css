@@ -215,4 +215,138 @@ body.density-compact .reader-content .space-y-4 > * + * {
 body.density-compact .reader-content hr {
   margin-top: 0.75rem !important;
   margin-bottom: 0.75rem !important;
-}/* Typography overrides for compact mode */
+}
+/* Typography overrides for compact mode */
+
+/* ═══════════════════════════ CRT TREATMENT ═══════════════════════════ */
+/* Driven by `crt-off` | `crt-subtle` | `crt-full` on <html> (see CrtOverlay). */
+
+.crt-root {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Scanlines */
+.crt-scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0,
+    rgba(0, 0, 0, 0) 1px,
+    rgba(0, 0, 0, 0.18) 1px,
+    rgba(0, 0, 0, 0.18) 2px
+  );
+  mix-blend-mode: multiply;
+}
+.crt-full .crt-scanlines {
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0,
+    rgba(0, 0, 0, 0) 1px,
+    rgba(0, 0, 0, 0.28) 1px,
+    rgba(0, 0, 0, 0.28) 3px
+  );
+}
+
+/* Vignette + faint phosphor tint */
+.crt-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.55) 100%),
+    radial-gradient(ellipse at center, rgba(80, 255, 120, 0.04) 0%, rgba(80, 255, 120, 0) 60%);
+}
+.crt-full .crt-vignette {
+  background:
+    radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, 0.7) 100%),
+    radial-gradient(ellipse at center, rgba(80, 255, 120, 0.06) 0%, rgba(80, 255, 120, 0) 55%);
+}
+
+/* Brightness flicker */
+.crt-flicker {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.02);
+  animation: crt-flicker 5.5s infinite steps(1);
+}
+@keyframes crt-flicker {
+  0%, 100% { opacity: 0.10; }
+  3% { opacity: 0.02; }
+  6% { opacity: 0.16; }
+  9% { opacity: 0.06; }
+  60% { opacity: 0.11; }
+  62% { opacity: 0.03; }
+}
+
+/* Screen glare (full only) */
+.crt-glare {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 40% 30% at 30% 12%,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
+}
+
+/* Occasional vertical roll bar (full only) */
+.crt-roll {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 22%;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.05) 45%,
+    rgba(255, 255, 255, 0.07) 55%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: crt-roll 9s linear infinite;
+}
+@keyframes crt-roll {
+  0% { top: -25%; opacity: 0; }
+  8% { opacity: 1; }
+  40% { opacity: 1; }
+  48% { top: 105%; opacity: 0; }
+  100% { top: 105%; opacity: 0; }
+}
+
+/* Chromatic aberration on text — full mode only, cheap global text-shadow */
+.crt-full body {
+  text-shadow:
+    0.5px 0 rgba(255, 0, 80, 0.28),
+    -0.5px 0 rgba(0, 255, 235, 0.28);
+}
+
+/* Boot-sequence power-on flash */
+.crt-boot-flash {
+  animation: crt-boot-flash 200ms ease-out forwards;
+}
+@keyframes crt-boot-flash {
+  0% { filter: brightness(1); }
+  35% { filter: brightness(6) saturate(0); background: #fff; }
+  100% { filter: brightness(1); opacity: 0; }
+}
+
+.crt-caret {
+  animation: crt-caret 1s steps(1) infinite;
+}
+@keyframes crt-caret {
+  0%, 50% { opacity: 1; }
+  50.01%, 100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crt-flicker,
+  .crt-roll,
+  .crt-boot-flash,
+  .crt-caret {
+    animation: none !important;
+  }
+}
+
