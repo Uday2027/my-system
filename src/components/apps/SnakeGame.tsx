@@ -6,6 +6,7 @@ const CELL = 16;
 const COLS = 24;
 const ROWS = 20;
 const HI_KEY = 'zhuday.snake.hi';
+const PAD_KEY = 'zhuday.snake.padsize';
 const START_SPEED = 140; // ms per step
 const MIN_SPEED = 60;
 
@@ -33,6 +34,7 @@ export default function SnakeGame() {
   const [state, setState] = useState<State>('idle');
   const [score, setScore] = useState(0);
   const [hi, setHi] = useState(0);
+  const [padSize, setPadSize] = useState(40); // px per button, user-resizable
 
   // mutable game data (kept in refs so the loop isn't re-created)
   const snakeRef = useRef<Pt[]>([]);
@@ -48,10 +50,22 @@ export default function SnakeGame() {
   useEffect(() => {
     try {
       setHi(Number(localStorage.getItem(HI_KEY)) || 0);
+      const p = Number(localStorage.getItem(PAD_KEY));
+      if (p >= 28 && p <= 96) setPadSize(p);
     } catch {
       /* ignore */
     }
   }, []);
+
+  const changePad = (v: number) => {
+    const clamped = Math.max(28, Math.min(96, v));
+    setPadSize(clamped);
+    try {
+      localStorage.setItem(PAD_KEY, String(clamped));
+    } catch {
+      /* ignore */
+    }
+  };
 
   const draw = useCallback(() => {
     const cv = canvasRef.current;
@@ -261,17 +275,62 @@ export default function SnakeGame() {
         )}
       </div>
 
-      {/* On-screen D-pad (mainly for touch) */}
-      <div className="grid grid-cols-3 gap-1 sm:hidden">
-        <span />
-        <button onClick={() => turn('up')} className="h-8 w-8 rounded border border-foreground/40 active:bg-foreground/10">▲</button>
-        <span />
-        <button onClick={() => turn('left')} className="h-8 w-8 rounded border border-foreground/40 active:bg-foreground/10">◀</button>
-        <button onClick={() => (state === 'running' ? undefined : start())} className="h-8 w-8 rounded border border-foreground/40 text-[9px] active:bg-foreground/10">●</button>
-        <button onClick={() => turn('right')} className="h-8 w-8 rounded border border-foreground/40 active:bg-foreground/10">▶</button>
-        <span />
-        <button onClick={() => turn('down')} className="h-8 w-8 rounded border border-foreground/40 active:bg-foreground/10">▼</button>
-        <span />
+      {/* On-screen D-pad — user-resizable */}
+      <div className="flex flex-col items-center gap-2">
+        <div className="grid grid-cols-3 gap-1" style={{ ['--btn' as string]: `${padSize}px` }}>
+          {(() => {
+            const btn = 'rounded border border-foreground/40 active:bg-foreground/10 flex items-center justify-center';
+            const sz = { width: 'var(--btn)', height: 'var(--btn)', fontSize: `${Math.round(padSize * 0.42)}px` };
+            return (
+              <>
+                <span />
+                <button onClick={() => turn('up')} style={sz} className={btn}>▲</button>
+                <span />
+                <button onClick={() => turn('left')} style={sz} className={btn}>◀</button>
+                <button
+                  onClick={() => (state === 'running' ? undefined : start())}
+                  style={{ ...sz, fontSize: `${Math.round(padSize * 0.3)}px` }}
+                  className={btn}
+                >
+                  ●
+                </button>
+                <button onClick={() => turn('right')} style={sz} className={btn}>▶</button>
+                <span />
+                <button onClick={() => turn('down')} style={sz} className={btn}>▼</button>
+                <span />
+              </>
+            );
+          })()}
+        </div>
+
+        {/* Resize control */}
+        <div className="flex items-center gap-2 text-[9px] uppercase tracking-widest text-muted-foreground">
+          <span>pad size</span>
+          <button
+            onClick={() => changePad(padSize - 8)}
+            className="h-5 w-5 rounded border border-foreground/40 leading-none active:bg-foreground/10"
+            aria-label="Smaller D-pad"
+          >
+            −
+          </button>
+          <input
+            type="range"
+            min={28}
+            max={96}
+            step={2}
+            value={padSize}
+            onChange={(e) => changePad(Number(e.target.value))}
+            className="w-24 accent-[#8fef8f]"
+            aria-label="D-pad size"
+          />
+          <button
+            onClick={() => changePad(padSize + 8)}
+            className="h-5 w-5 rounded border border-foreground/40 leading-none active:bg-foreground/10"
+            aria-label="Larger D-pad"
+          >
+            +
+          </button>
+        </div>
       </div>
     </div>
   );
