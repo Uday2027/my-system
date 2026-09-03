@@ -34,11 +34,26 @@ export interface Achievement {
   order: number;
 }
 
+export interface About {
+  name: string;
+  role: string;
+  status: string;
+  location: string;
+  tagline: string;
+  paragraphs: string[];
+  recentWork: string[];
+  products: string[];
+  stack: Record<string, string[]>;
+  interests: string[];
+  closing: string;
+}
+
 const byOrder = <T extends { order: number }>(a: T, b: T) => a.order - b.order;
 
 export const projects: Project[] = [...(data.projects as Project[])].sort(byOrder);
 export const skills: Skill[] = [...(data.skills as Skill[])].sort(byOrder);
 export const achievements: Achievement[] = [...(data.achievements as Achievement[])].sort(byOrder);
+export const about: About = data.about as About;
 
 // Back-compat aliases (previous name of these exports).
 export const projectsSeed = projects;

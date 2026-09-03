@@ -25,7 +25,7 @@ export const DEFAULT_SETTINGS: Settings = {
   tone: 'ink',
   typography: 'sans',
   density: 'standard',
-  crt: 'subtle',
+  crt: 'off',
   sound: false,
   radio: false,
 };

@@ -176,12 +176,20 @@
   ],
   "achievements": [
     {
+      "id": "a0",
+      "title": "Automation & Software Engineer — PlugWheel",
+      "description": "Building automation systems designed around how businesses actually operate — connecting tools, data, processes, and people (HubSpot, Stripe, DocuSign, Slack, Google Workspace, n8n, PostgreSQL) to cut repetitive work and operational friction. Focus on reliability, maintainability, and measurable business impact.",
+      "date": "2026 - Present",
+      "link": "https://plugwheel.com",
+      "order": 1
+    },
+    {
       "id": "a1",
       "title": "Software Engineer Intern — InfancyIT Limited",
       "description": "Building web applications with React.js and Node.js in a hybrid engineering team.",
       "date": "Jun 2026 - Present",
       "link": "https://infancyit.com",
-      "order": 1
+      "order": 2
     },
     {
       "id": "a2",
@@ -189,7 +197,7 @@
       "description": "Leading organizational activities for the department’s student society, coordinating the executive committee, and supporting academic and extracurricular programs.",
       "date": "Sep 2026 - Present",
       "link": null,
-      "order": 2
+      "order": 3
     },
     {
       "id": "a3",
@@ -197,7 +205,42 @@
       "description": "Led publication and communication activities, increasing member engagement across platforms.",
       "date": "Sep 2025 - Aug 2026",
       "link": null,
-      "order": 3
+      "order": 4
     }
-  ]
+  ],
+  "about": {
+    "name": "Zubayer Hossain Uday",
+    "role": "Software & Automation Engineer",
+    "status": "Available for work",
+    "location": "Sylhet, Bangladesh",
+    "tagline": "I build software and automation systems that solve real business problems — cleanly, reliably, and at scale.",
+    "paragraphs": [
+      "I'm a Computer Science student and software engineer with a growing focus on automation engineering, AI-powered workflows, backend systems, and business process optimization.",
+      "My work goes beyond building interfaces. I enjoy understanding how a process works, spotting where time is being wasted, and engineering a system that makes it simpler.",
+      "Today, a major part of my work is around PlugWheel, where we build automation systems designed around how businesses actually operate — connecting tools, data, processes, and people to reduce repetitive work and operational friction.",
+      "I care about three things when building systems: reliability, maintainability, and actual business impact. Shipping something that works once is easy. Building something that keeps working as the business grows is the real challenge."
+    ],
+    "recentWork": [
+      "AI and workflow automation with n8n, Make, APIs, and webhooks",
+      "Google Workspace and Apps Script automation",
+      "Odoo and business process automation",
+      "CRM, lead-management, and communication workflows",
+      "Web scraping and data-processing systems",
+      "Full-stack web apps with React, Next.js, Node.js, and Python",
+      "AI-integrated applications and internal business tools"
+    ],
+    "products": [
+      "The7t7 — a full-stack e-commerce platform",
+      "Blend:It — a real-time collaboration app built on WebSockets",
+      "AI-integrated systems focused on usability, performance, and maintainability"
+    ],
+    "stack": {
+      "Frontend": ["JavaScript", "TypeScript", "React", "Next.js", "Tailwind CSS"],
+      "Backend": ["Node.js", "Express", "Python", "FastAPI", "PostgreSQL", "MongoDB"],
+      "Automation": ["n8n", "Make", "Apps Script", "APIs", "Webhooks", "Odoo"],
+      "Infrastructure": ["Docker", "Git", "Vercel", "Railway", "Render", "Hostinger"]
+    },
+    "interests": ["cycling", "singing", "planning adventure tours"],
+    "closing": "Always open to conversations around software engineering, AI, automation, startups, and interesting problems worth solving."
+  }
 }

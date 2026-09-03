@@ -3,12 +3,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { 
   Folder, FileText, Terminal as TerminalIcon, Image as ImageIcon,
-  User, Sliders, Menu, X, Minimize2, Calendar, Mail, ExternalLink, ArrowUpRight,
+  User, Sliders, Menu, X, Minimize2, Mail, ExternalLink, ArrowUpRight,
   Battery, BatteryCharging, Wifi, WifiOff, Volume2, VolumeX, Tv, Github, Linkedin, Gamepad2
 } from 'lucide-react';
 import FloatingTerminal from './FloatingTerminal';
 import AsciiArtLab from './AsciiArtLab';
 import SnakeGame from './apps/SnakeGame';
+import { about } from '@/lib/portfolioData';
 import ProjectList from './ProjectList';
 import { toast } from 'sonner';
 import { useSettings, setSetting, type Crt } from '@/lib/os/settings';
@@ -592,16 +593,42 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
         <div className="space-y-6 reader-content">
           {/* Bio Section */}
           <div className="space-y-3">
-            <h2 className="text-base font-bold text-foreground">Zubayer Hossain Uday</h2>
-            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Full Stack Software Engineer</h3>
-            <p className="text-muted-foreground leading-relaxed">
-              I build clean, performant web applications with modern tools. Currently working with Next.js, TypeScript, and Prisma. Based in Dhaka, Bangladesh.
-            </p>
+            <h2 className="text-base font-bold text-foreground">{about.name}</h2>
+            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{about.role}</h3>
+            <p className="text-foreground font-medium leading-relaxed">{about.tagline}</p>
+            {about.paragraphs.map((p, i) => (
+              <p key={i} className="text-muted-foreground leading-relaxed">{p}</p>
+            ))}
             <div className="pt-2 flex gap-4 text-xs font-mono">
               <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-foreground hover:underline">
                 Download CV <ArrowUpRight className="w-3 h-3" />
               </a>
             </div>
+          </div>
+          <hr className="border-border" />
+          {/* Recent Work */}
+          <div className="space-y-2">
+            <h3 className="text-xs font-bold text-foreground uppercase tracking-wider">Recent Work</h3>
+            <ul className="space-y-1 text-xs text-muted-foreground leading-relaxed">
+              {about.recentWork.map((w, i) => (
+                <li key={i} className="flex gap-2"><span className="text-foreground">›</span>{w}</li>
+              ))}
+            </ul>
+          </div>
+          <hr className="border-border" />
+          {/* Tech stack */}
+          <div className="space-y-3">
+            <h3 className="text-xs font-bold text-foreground uppercase tracking-wider">Tech I Work With</h3>
+            {Object.entries(about.stack).map(([group, items]) => (
+              <div key={group} className="space-y-1">
+                <h4 className="text-[9px] font-bold text-muted-foreground uppercase">{group}</h4>
+                <div className="flex flex-wrap gap-1.5">
+                  {items.map((t) => (
+                    <span key={t} className="text-[10px] px-2 py-0.5 border border-border bg-card text-foreground rounded">{t}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
           <hr className="border-border" />
           {/* Skills Section */}
@@ -717,7 +744,7 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Location:</span>
-              <span className="text-foreground">Dhaka, Bangladesh</span>
+              <span className="text-foreground">{about.location}</span>
             </div>
           </div>
         </div>
@@ -837,7 +864,7 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                   { key: 'about', label: 'about_me.txt', Icon: User },
                   { key: 'projects', label: 'projects.dir', Icon: Folder },
                   { key: 'skills', label: 'skills.stack', Icon: Sliders },
-                  { key: 'experience', label: 'history.log', Icon: Calendar },
+                  { key: 'experience', label: 'experience.dir', Icon: Folder },
                   { key: 'contact', label: 'contact.card', Icon: Mail },
                   { key: 'shell', label: 'terminal.sh', Icon: TerminalIcon },
                   { key: 'artlab', label: 'art_lab.app', Icon: ImageIcon },
@@ -1055,7 +1082,7 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
           if (key === 'about') { iconName = 'about_me.txt'; IconComponent = User; }
           else if (key === 'projects') { iconName = 'projects.dir'; IconComponent = Folder; }
           else if (key === 'skills') { iconName = 'skills.stack'; IconComponent = Sliders; }
-          else if (key === 'experience') { iconName = 'history.log'; IconComponent = Calendar; }
+          else if (key === 'experience') { iconName = 'experience.dir'; IconComponent = Folder; }
           else if (key === 'contact') { iconName = 'contact.card'; IconComponent = Mail; }
           else if (key === 'shell') { iconName = 'terminal.sh'; IconComponent = TerminalIcon; }
           else if (key === 'artlab') { iconName = 'art_lab.app'; IconComponent = ImageIcon; }
@@ -1148,7 +1175,7 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                     {key === 'about' && 'about_me.txt'}
                     {key === 'projects' && 'projects.dir'}
                     {key === 'skills' && 'skills.stack'}
-                    {key === 'experience' && 'history.log'}
+                    {key === 'experience' && 'experience.dir'}
                     {key === 'contact' && 'contact.card'}
                     {key === 'shell' && 'terminal.sh'}
                     {key === 'artlab' && 'art_lab.app'}
@@ -1175,22 +1202,67 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                           <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                         </span>
-                        <span className="text-muted-foreground uppercase font-medium">Available for opportunities</span>
+                        <span className="text-muted-foreground uppercase font-medium">{about.status}</span>
                       </div>
-                      <h2 className="text-lg font-bold text-foreground font-mono">Zubayer Hossain Uday</h2>
-                      <h3 className="text-xs font-bold text-muted-foreground font-mono uppercase tracking-wider">Full Stack Software Engineer</h3>
-                      <p className="text-muted-foreground leading-relaxed">
-                        I build clean, performant web applications with modern tools. Currently working with Next.js, TypeScript, and Prisma. Based in Dhaka, Bangladesh.
-                      </p>
-                      <p className="text-muted-foreground">
-                        This entire website is styled as an interactive retro system emulator. Navigate details by double-clicking the icons or typing commands inside the `terminal.sh` window.
-                      </p>
+                      <h2 className="text-lg font-bold text-foreground font-mono">{about.name}</h2>
+                      <h3 className="text-xs font-bold text-muted-foreground font-mono uppercase tracking-wider">{about.role}</h3>
+                      <p className="text-foreground font-medium leading-relaxed">{about.tagline}</p>
+                      {about.paragraphs.map((p, i) => (
+                        <p key={i} className="text-muted-foreground leading-relaxed">{p}</p>
+                      ))}
                       <div className="pt-2 flex gap-4 text-xs font-mono">
                         <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-foreground hover:underline">
                           Download CV <ArrowUpRight className="w-3 h-3" />
                         </a>
                       </div>
                     </div>
+
+                    <hr className="border-border" />
+
+                    {/* Recent Work */}
+                    <div className="space-y-2">
+                      <h3 className="text-sm font-bold font-mono text-foreground uppercase tracking-widest">Recent Work</h3>
+                      <ul className="space-y-1 text-xs text-muted-foreground leading-relaxed">
+                        {about.recentWork.map((w, i) => (
+                          <li key={i} className="flex gap-2"><span className="text-foreground">›</span>{w}</li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <hr className="border-border" />
+
+                    {/* Products built */}
+                    <div className="space-y-2">
+                      <h3 className="text-sm font-bold font-mono text-foreground uppercase tracking-widest">Products I've Built</h3>
+                      <ul className="space-y-1 text-xs text-muted-foreground leading-relaxed">
+                        {about.products.map((w, i) => (
+                          <li key={i} className="flex gap-2"><span className="text-foreground">›</span>{w}</li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <hr className="border-border" />
+
+                    {/* Tech stack groups */}
+                    <div className="space-y-3">
+                      <h3 className="text-sm font-bold font-mono text-foreground uppercase tracking-widest">Tech I Work With</h3>
+                      {Object.entries(about.stack).map(([group, items]) => (
+                        <div key={group} className="space-y-1.5">
+                          <h4 className="text-[10px] font-bold font-mono text-muted-foreground uppercase tracking-wider">{group}</h4>
+                          <div className="flex flex-wrap gap-1.5">
+                            {items.map((t) => (
+                              <span key={t} className="text-[11px] px-2 py-0.5 border border-border bg-card text-foreground rounded font-mono">{t}</span>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <hr className="border-border" />
+
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      Outside of work: {about.interests.join(', ')}. {about.closing}
+                    </p>
 
                     <hr className="border-border" />
 
@@ -1299,7 +1371,7 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                         </div>
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Location:</span>
-                          <span className="text-foreground">Dhaka, Bangladesh</span>
+                          <span className="text-foreground">{about.location}</span>
                         </div>
                       </div>
                     </div>
@@ -1378,7 +1450,7 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Location:</span>
-                        <span className="text-foreground">Dhaka, Bangladesh</span>
+                        <span className="text-foreground">{about.location}</span>
                       </div>
                     </div>
                   </div>
@@ -1706,7 +1778,7 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
             if (key === 'about') displayName = 'about_me.txt';
             if (key === 'projects') displayName = 'projects.dir';
             if (key === 'skills') displayName = 'skills.stack';
-            if (key === 'experience') displayName = 'history.log';
+            if (key === 'experience') displayName = 'experience.dir';
             if (key === 'contact') displayName = 'contact.card';
             if (key === 'shell') displayName = 'terminal.sh';
             if (key === 'artlab') displayName = 'art_lab.app';
