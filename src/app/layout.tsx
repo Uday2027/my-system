@@ -19,11 +19,11 @@ export const metadata: Metadata = {
     default: "Zubayer Hossain Uday | Full Stack Software Engineer",
     template: "%s | Zubayer Hossain Uday"
   },
-  description: "Full Stack Software Engineer specializing in clean, performant web applications using Next.js, TypeScript, and Prisma.",
+  description: "Full Stack Software Engineer building clean, performant web applications with Next.js, TypeScript, and modern tooling.",
   openGraph: {
     title: "Zubayer Hossain Uday | Full Stack Software Engineer",
-    description: "Full Stack Software Engineer specializing in clean, performant web applications using Next.js, TypeScript, and Prisma.",
-    url: "https://uday.dev",
+    description: "Full Stack Software Engineer building clean, performant web applications with Next.js, TypeScript, and modern tooling.",
+    url: "https://www.zhuday.me",
     siteName: "Zubayer Hossain Uday Portfolio",
     locale: "en_US",
     type: "website",
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Zubayer Hossain Uday | Full Stack Software Engineer",
-    description: "Full Stack Software Engineer specializing in clean, performant web applications using Next.js, TypeScript, and Prisma.",
+    description: "Full Stack Software Engineer building clean, performant web applications with Next.js, TypeScript, and modern tooling.",
   },
   robots: {
     index: true,

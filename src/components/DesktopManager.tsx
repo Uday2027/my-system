@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { 
   Folder, FileText, Terminal as TerminalIcon, Image as ImageIcon,
   User, Sliders, Menu, X, Minimize2, Calendar, Mail, ExternalLink, ArrowUpRight,
-  Battery, BatteryCharging, Wifi, WifiOff, Volume2, VolumeX, Tv
+  Battery, BatteryCharging, Wifi, WifiOff, Volume2, VolumeX, Tv, Github, Linkedin
 } from 'lucide-react';
 import FloatingTerminal from './FloatingTerminal';
 import AsciiArtLab from './AsciiArtLab';
@@ -523,15 +523,15 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
             <div className="space-y-2 text-xs">
               <div className="flex justify-between border-b border-border pb-1">
                 <span className="text-muted-foreground">Email:</span>
-                <a href="mailto:zubayerhossain1009@gmail.com" className="hover:underline">zubayerhossain1009@gmail.com</a>
+                <a href="mailto:zubayerhossain1009@gmail.com" className="flex items-center gap-1 hover:underline"><Mail className="w-3 h-3 shrink-0" /> zubayerhossain1009@gmail.com</a>
               </div>
               <div className="flex justify-between border-b border-border pb-1">
                 <span className="text-muted-foreground">GitHub:</span>
-                <a href="https://github.com/Uday2027" target="_blank" rel="noopener noreferrer" className="hover:underline">github.com/Uday2027</a>
+                <a href="https://github.com/Uday2027" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:underline"><Github className="w-3 h-3" /> github.com/Uday2027</a>
               </div>
               <div className="flex justify-between border-b border-border pb-1">
                 <span className="text-muted-foreground">LinkedIn:</span>
-                <a href="https://www.linkedin.com/in/zubayer-hossain-uday-3481841bb/" target="_blank" rel="noopener noreferrer" className="hover:underline text-right truncate max-w-[60%]">linkedin.com/...</a>
+                <a href="https://www.linkedin.com/in/zubayer-hossain-uday-3481841bb/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 min-w-0 hover:underline text-right max-w-[60%]"><Linkedin className="w-3 h-3 shrink-0" /> <span className="truncate">linkedin.com/...</span></a>
               </div>
             </div>
           </div>
@@ -587,15 +587,15 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
           <div className="space-y-2 text-xs">
             <div className="flex justify-between border-b border-border pb-1.5">
               <span className="text-muted-foreground">Email:</span>
-              <a href="mailto:zubayerhossain1009@gmail.com" className="text-foreground hover:underline">zubayerhossain1009@gmail.com</a>
+              <a href="mailto:zubayerhossain1009@gmail.com" className="text-foreground hover:underline flex items-center gap-1"><Mail className="w-3 h-3 shrink-0" /> zubayerhossain1009@gmail.com</a>
             </div>
             <div className="flex justify-between border-b border-border pb-1.5">
               <span className="text-muted-foreground">GitHub:</span>
-              <a href="https://github.com/Uday2027" target="_blank" rel="noopener noreferrer" className="text-foreground hover:underline">github.com/Uday2027</a>
+              <a href="https://github.com/Uday2027" target="_blank" rel="noopener noreferrer" className="text-foreground hover:underline flex items-center gap-1"><Github className="w-3 h-3" /> github.com/Uday2027</a>
             </div>
             <div className="flex justify-between border-b border-border pb-1.5">
               <span className="text-muted-foreground">LinkedIn:</span>
-              <a href="https://www.linkedin.com/in/zubayer-hossain-uday-3481841bb/" target="_blank" rel="noopener noreferrer" className="text-foreground hover:underline truncate max-w-[65%] text-right">linkedin.com/in/zubayer-hossain-uday-3481841bb</a>
+              <a href="https://www.linkedin.com/in/zubayer-hossain-uday-3481841bb/" target="_blank" rel="noopener noreferrer" className="text-foreground flex items-center gap-1 min-w-0 hover:underline max-w-[65%] text-right"><Linkedin className="w-3 h-3 shrink-0" /> <span className="truncate">linkedin.com/in/zubayer-hossain-uday-3481841bb</span></a>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Location:</span>
@@ -776,15 +776,15 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                 <div className="space-y-2.5 text-[11px] leading-relaxed font-mono">
                   <div className="flex justify-between border-b border-border pb-1.5">
                     <span className="text-muted-foreground">Email:</span>
-                    <a href="mailto:zubayerhossain1009@gmail.com" className="text-foreground hover:underline">zubayerhossain1009@gmail.com</a>
+                    <a href="mailto:zubayerhossain1009@gmail.com" className="text-foreground hover:underline flex items-center gap-1"><Mail className="w-3 h-3 shrink-0" /> zubayerhossain1009@gmail.com</a>
                   </div>
                   <div className="flex justify-between border-b border-border pb-1.5">
                     <span className="text-muted-foreground">GitHub:</span>
-                    <a href="https://github.com/Uday2027" target="_blank" rel="noopener noreferrer" className="text-foreground hover:underline">github.com/Uday2027</a>
+                    <a href="https://github.com/Uday2027" target="_blank" rel="noopener noreferrer" className="text-foreground hover:underline flex items-center gap-1"><Github className="w-3 h-3" /> github.com/Uday2027</a>
                   </div>
                   <div className="flex justify-between border-b border-border pb-1.5">
                     <span className="text-muted-foreground">LinkedIn:</span>
-                    <a href="https://www.linkedin.com/in/zubayer-hossain-uday-3481841bb/" target="_blank" rel="noopener noreferrer" className="text-foreground hover:underline truncate max-w-[60%] text-right">linkedin.com/in/...</a>
+                    <a href="https://www.linkedin.com/in/zubayer-hossain-uday-3481841bb/" target="_blank" rel="noopener noreferrer" className="text-foreground flex items-center gap-1 min-w-0 hover:underline max-w-[60%] text-right"><Linkedin className="w-3 h-3 shrink-0" /> <span className="truncate">linkedin.com/in/...</span></a>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Location:</span>
@@ -897,9 +897,15 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
           </div>
           <span className="h-3 w-px bg-border hidden md:inline" />
           <div className="hidden md:flex items-center gap-3 text-muted-foreground">
-            <a href="mailto:zubayerhossain1009@gmail.com" className="hover:text-foreground transition-colors">Email</a>
-            <a href="https://github.com/Uday2027" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">GitHub</a>
-            <a href="https://www.linkedin.com/in/zubayer-hossain-uday-3481841bb/" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">LinkedIn</a>
+            <a href="mailto:zubayerhossain1009@gmail.com" aria-label="Email" className="flex items-center gap-1 hover:text-foreground transition-colors">
+              <Mail className="w-3 h-3" /> Email
+            </a>
+            <a href="https://github.com/Uday2027" target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="flex items-center gap-1 hover:text-foreground transition-colors">
+              <Github className="w-3 h-3" /> GitHub
+            </a>
+            <a href="https://www.linkedin.com/in/zubayer-hossain-uday-3481841bb/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="flex items-center gap-1 hover:text-foreground transition-colors">
+              <Linkedin className="w-3 h-3" /> LinkedIn
+            </a>
           </div>
         </div>
 
@@ -1112,8 +1118,8 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                                 <h4 className="font-bold text-foreground">{p.title}</h4>
                                 <div className="flex items-center gap-2 text-[10px]">
                                   {p.githubUrl && (
-                                    <a href={p.githubUrl} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground flex items-center gap-0.5">
-                                      GitHub <ArrowUpRight className="w-2.5 h-2.5" />
+                                    <a href={p.githubUrl} target="_blank" rel="noopener noreferrer" aria-label="GitHub repository" className="text-muted-foreground hover:text-foreground flex items-center gap-0.5">
+                                      <Github className="w-2.5 h-2.5" /> GitHub
                                     </a>
                                   )}
                                   {p.liveUrl && (
@@ -1139,18 +1145,18 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                       <div className="space-y-2 text-xs">
                         <div className="flex justify-between border-b border-border pb-1.5">
                           <span className="text-muted-foreground">Email:</span>
-                          <a href="mailto:zubayerhossain1009@gmail.com" className="text-foreground hover:underline">zubayerhossain1009@gmail.com</a>
+                          <a href="mailto:zubayerhossain1009@gmail.com" className="text-foreground hover:underline flex items-center gap-1"><Mail className="w-3 h-3 shrink-0" /> zubayerhossain1009@gmail.com</a>
                         </div>
                         <div className="flex justify-between border-b border-border pb-1.5">
                           <span className="text-muted-foreground">GitHub:</span>
                           <a href="https://github.com/Uday2027" target="_blank" rel="noopener noreferrer" className="text-foreground hover:underline flex items-center gap-1">
-                            github.com/Uday2027 <ExternalLink className="w-3 h-3" />
+                            <Github className="w-3 h-3" /> github.com/Uday2027 <ExternalLink className="w-3 h-3" />
                           </a>
                         </div>
                         <div className="flex justify-between border-b border-border pb-1.5">
                           <span className="text-muted-foreground">LinkedIn:</span>
                           <a href="https://www.linkedin.com/in/zubayer-hossain-uday-3481841bb/" target="_blank" rel="noopener noreferrer" className="text-foreground hover:underline flex items-center gap-1">
-                            linkedin.com/in/zubayer-hossain-uday-3481841bb <ExternalLink className="w-3 h-3" />
+                            <Linkedin className="w-3 h-3" /> linkedin.com/in/zubayer-hossain-uday-3481841bb <ExternalLink className="w-3 h-3" />
                           </a>
                         </div>
                         <div className="flex justify-between">
@@ -1218,18 +1224,18 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                     <div className="space-y-2 pt-2 text-xs">
                       <div className="flex justify-between border-b border-border pb-1.5">
                         <span className="text-muted-foreground">Email:</span>
-                        <a href="mailto:zubayerhossain1009@gmail.com" className="text-foreground hover:underline">zubayerhossain1009@gmail.com</a>
+                        <a href="mailto:zubayerhossain1009@gmail.com" className="text-foreground hover:underline flex items-center gap-1"><Mail className="w-3 h-3 shrink-0" /> zubayerhossain1009@gmail.com</a>
                       </div>
                       <div className="flex justify-between border-b border-border pb-1.5">
                         <span className="text-muted-foreground">GitHub:</span>
                         <a href="https://github.com/Uday2027" target="_blank" rel="noopener noreferrer" className="text-foreground hover:underline flex items-center gap-1">
-                          github.com/Uday2027 <ExternalLink className="w-3 h-3" />
+                          <Github className="w-3 h-3" /> github.com/Uday2027 <ExternalLink className="w-3 h-3" />
                         </a>
                       </div>
                       <div className="flex justify-between border-b border-border pb-1.5">
                         <span className="text-muted-foreground">LinkedIn:</span>
                         <a href="https://www.linkedin.com/in/zubayer-hossain-uday-3481841bb/" target="_blank" rel="noopener noreferrer" className="text-foreground hover:underline flex items-center gap-1">
-                          linkedin.com/in/zubayer-hossain-uday-3481841bb <ExternalLink className="w-3 h-3" />
+                          <Linkedin className="w-3 h-3" /> linkedin.com/in/zubayer-hossain-uday-3481841bb <ExternalLink className="w-3 h-3" />
                         </a>
                       </div>
                       <div className="flex justify-between">

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { ArrowUpRight } from 'lucide-react';
+import { Github } from 'lucide-react';
 
 interface Project {
   id: string;
@@ -73,9 +73,10 @@ export default function ProjectList({ projects }: ProjectListProps) {
                       href={project.githubUrl}
                       target="_blank"
                       rel="noopener noreferrer"
+                      aria-label="GitHub repository"
                       className="text-muted-foreground hover:text-foreground transition-colors"
                     >
-                      <ArrowUpRight className="w-3.5 h-3.5" />
+                      <Github className="w-3.5 h-3.5" />
                     </a>
                   )}
                   {project.liveUrl && (

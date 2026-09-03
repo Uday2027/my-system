@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Search, Command, ArrowRight, CornerDownLeft, Sparkles, Sliders, Navigation, Link as LinkIcon, FileText } from 'lucide-react';
+import type { ReactNode } from 'react';
+import { Search, Command, ArrowRight, CornerDownLeft, Sparkles, Sliders, Navigation, Link as LinkIcon, FileText, Github, Linkedin, Mail } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface Project {
@@ -19,6 +20,7 @@ interface CommandItem {
   subtitle?: string;
   category: 'Actions' | 'Navigation' | 'Projects' | 'Typography' | 'Page Tone' | 'Spacing';
   action: () => void;
+  icon?: ReactNode;
 }
 
 export default function CommandPalette({ projects }: CommandPaletteProps) {
@@ -193,6 +195,7 @@ export default function CommandPalette({ projects }: CommandPaletteProps) {
         title: 'Copy Email to Clipboard',
         subtitle: 'Copies zubayerhossain1009@gmail.com',
         category: 'Actions',
+        icon: <Mail className="w-3.5 h-3.5" />,
         action: () => {
           setIsOpen(false);
           navigator.clipboard.writeText('zubayerhossain1009@gmail.com');
@@ -204,6 +207,7 @@ export default function CommandPalette({ projects }: CommandPaletteProps) {
         title: 'Open GitHub Profile',
         subtitle: 'GitHub profile link (Uday2027)',
         category: 'Actions',
+        icon: <Github className="w-3.5 h-3.5" />,
         action: () => {
           setIsOpen(false);
           window.open('https://github.com/Uday2027', '_blank');
@@ -214,19 +218,10 @@ export default function CommandPalette({ projects }: CommandPaletteProps) {
         title: 'Open LinkedIn Profile',
         subtitle: 'LinkedIn profile link',
         category: 'Actions',
+        icon: <Linkedin className="w-3.5 h-3.5" />,
         action: () => {
           setIsOpen(false);
           window.open('https://www.linkedin.com/in/zubayer-hossain-uday-3481841bb/', '_blank');
-        },
-      },
-      {
-        id: 'action-admin',
-        title: 'Go to Admin Console',
-        subtitle: 'Open auth credentials page',
-        category: 'Actions',
-        action: () => {
-          setIsOpen(false);
-          window.location.href = '/admin';
         },
       },
     ];
@@ -345,12 +340,16 @@ export default function CommandPalette({ projects }: CommandPaletteProps) {
                       }`}
                     >
                       <div className="flex items-start gap-3 min-w-0">
-                        {/* Category Icon */}
+                        {/* Per-item icon, falling back to a category icon */}
                         <div className="pt-0.5 shrink-0">
-                          {cmd.category === 'Navigation' && <Navigation className="w-3.5 h-3.5" />}
-                          {cmd.category === 'Projects' && <Sparkles className="w-3.5 h-3.5" />}
-                          {cmd.category === 'Actions' && <FileText className="w-3.5 h-3.5" />}
-                          {(cmd.category === 'Page Tone' || cmd.category === 'Typography' || cmd.category === 'Spacing') && <Sliders className="w-3.5 h-3.5" />}
+                          {cmd.icon ? cmd.icon : (
+                            <>
+                              {cmd.category === 'Navigation' && <Navigation className="w-3.5 h-3.5" />}
+                              {cmd.category === 'Projects' && <Sparkles className="w-3.5 h-3.5" />}
+                              {cmd.category === 'Actions' && <FileText className="w-3.5 h-3.5" />}
+                              {(cmd.category === 'Page Tone' || cmd.category === 'Typography' || cmd.category === 'Spacing') && <Sliders className="w-3.5 h-3.5" />}
+                            </>
+                          )}
                         </div>
                         <div className="min-w-0">
                           <span className="font-medium text-sm block leading-none">{cmd.title}</span>
