@@ -176,20 +176,12 @@
   ],
   "achievements": [
     {
-      "id": "a0",
-      "title": "Automation & Software Engineer — PlugWheel",
-      "description": "Building automation systems designed around how businesses actually operate — connecting tools, data, processes, and people (HubSpot, Stripe, DocuSign, Slack, Google Workspace, n8n, PostgreSQL) to cut repetitive work and operational friction. Focus on reliability, maintainability, and measurable business impact.",
-      "date": "2026 - Present",
-      "link": "https://plugwheel.com",
-      "order": 1
-    },
-    {
       "id": "a1",
       "title": "Software Engineer Intern — InfancyIT Limited",
       "description": "Building web applications with React.js and Node.js in a hybrid engineering team.",
       "date": "Jun 2026 - Present",
       "link": "https://infancyit.com",
-      "order": 2
+      "order": 1
     },
     {
       "id": "a2",
@@ -197,7 +189,7 @@
       "description": "Leading organizational activities for the department’s student society, coordinating the executive committee, and supporting academic and extracurricular programs.",
       "date": "Sep 2026 - Present",
       "link": null,
-      "order": 3
+      "order": 2
     },
     {
       "id": "a3",
@@ -205,7 +197,7 @@
       "description": "Led publication and communication activities, increasing member engagement across platforms.",
       "date": "Sep 2025 - Aug 2026",
       "link": null,
-      "order": 4
+      "order": 3
     }
   ],
   "about": {

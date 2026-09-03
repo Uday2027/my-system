@@ -319,6 +319,26 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Mobile: device Back button should return to the home grid, not leave the site.
+  // Opening an app pushes a history entry; Back (popstate) pops it and closes the app.
+  useEffect(() => {
+    if (openMobileApp && window.history.state?.mobileApp !== openMobileApp) {
+      window.history.pushState({ mobileApp: openMobileApp }, '');
+    }
+  }, [openMobileApp]);
+
+  useEffect(() => {
+    const onPop = () => setOpenMobileApp(null);
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, []);
+
+  const closeMobileApp = () => {
+    playSound('close');
+    if (window.history.state?.mobileApp) window.history.back();
+    else setOpenMobileApp(null);
+  };
+
   // Group skills by category
   const skillsByCategory = skills.reduce((acc, skill) => {
     if (!acc[skill.category]) acc[skill.category] = [];
@@ -922,7 +942,7 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
               {/* App Header */}
               <div className="h-9 bg-neutral-900/10 border-b border-foreground flex items-center justify-between px-3 select-none shrink-0">
                 <button
-                  onClick={() => { setOpenMobileApp(null); playSound('close'); }}
+                  onClick={closeMobileApp}
                   className="flex items-center gap-1.5 text-[11px] font-semibold text-foreground active:opacity-60"
                   title="Back"
                 >
@@ -943,10 +963,10 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
 
         {/* Bottom home indicator — tap / swipe up to go home */}
         <div
-          onClick={() => { if (openMobileApp) { setOpenMobileApp(null); playSound('close'); } }}
+          onClick={() => { if (openMobileApp) closeMobileApp(); }}
           onTouchEnd={(e) => {
             const t = e.changedTouches[0];
-            if (t && openMobileApp) { setOpenMobileApp(null); playSound('close'); }
+            if (t && openMobileApp) closeMobileApp();
           }}
           className="shrink-0 h-8 flex items-center justify-center bg-card border-t border-border z-50"
         >
