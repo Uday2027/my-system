@@ -4,13 +4,12 @@ import { useState, useEffect, useRef } from 'react';
 import { 
   Folder, FileText, Terminal as TerminalIcon, Image as ImageIcon,
   User, Sliders, Menu, X, Minimize2, Mail, ExternalLink, ArrowUpRight,
-  Battery, BatteryCharging, Wifi, WifiOff, Volume2, VolumeX, Tv, Github, Linkedin, Gamepad2, Workflow, BookText, HelpCircle
+  Battery, BatteryCharging, Wifi, WifiOff, Volume2, VolumeX, Tv, Github, Linkedin, Gamepad2, BookText, HelpCircle
 } from 'lucide-react';
 import FloatingTerminal from './FloatingTerminal';
 import AsciiArtLab from './AsciiArtLab';
 import SnakeGame from './apps/SnakeGame';
 import Game2048 from './apps/Game2048';
-import WorkflowSim from './apps/WorkflowSim';
 import Guestbook from './apps/Guestbook';
 import StackQuiz from './apps/StackQuiz';
 import { about } from '@/lib/portfolioData';
@@ -48,7 +47,7 @@ interface DesktopManagerProps {
   achievements: Achievement[];
 }
 
-type WindowKey = 'about' | 'projects' | 'skills' | 'experience' | 'contact' | 'shell' | 'artlab' | 'youtube' | 'snake' | 'game2048' | 'workflow' | 'guestbook' | 'quiz';
+type WindowKey = 'about' | 'projects' | 'skills' | 'experience' | 'contact' | 'shell' | 'artlab' | 'youtube' | 'snake' | 'game2048' | 'guestbook' | 'quiz';
 type FontOption = 'sans' | 'serif' | 'mono';
 type ThemeOption = 'ink' | 'paper' | 'sepia' | 'amber' | 'green' | 'c64';
 type DensityOption = 'standard' | 'compact';
@@ -284,15 +283,14 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
     youtube: { open: false, x: 0, y: 0, z: 1, width: '560px', height: '440px' },
     snake: { open: false, x: 0, y: 0, z: 1, width: '440px', height: '520px' },
     game2048: { open: false, x: 0, y: 0, z: 1, width: '380px', height: '520px' },
-    workflow: { open: false, x: 0, y: 0, z: 1, width: '520px', height: '480px' },
     guestbook: { open: false, x: 0, y: 0, z: 1, width: '420px', height: '460px' },
     quiz: { open: false, x: 0, y: 0, z: 1, width: '460px', height: '460px' },
   });
 
-  type IconKey = 'about' | 'projects' | 'skills' | 'experience' | 'contact' | 'shell' | 'artlab' | 'youtube' | 'snake' | 'game2048' | 'workflow' | 'guestbook' | 'quiz';
+  type IconKey = 'about' | 'projects' | 'skills' | 'experience' | 'contact' | 'shell' | 'artlab' | 'youtube' | 'snake' | 'game2048' | 'guestbook' | 'quiz';
   interface IconPosition { x: number; y: number; }
 
-  const ICON_ORDER: IconKey[] = ['about', 'projects', 'skills', 'experience', 'contact', 'shell', 'artlab', 'youtube', 'snake', 'game2048', 'workflow', 'guestbook', 'quiz'];
+  const ICON_ORDER: IconKey[] = ['about', 'projects', 'skills', 'experience', 'contact', 'shell', 'artlab', 'youtube', 'snake', 'game2048', 'guestbook', 'quiz'];
 
   // Grid-flow layout: fill a column top->bottom, wrap to the next column when
   // it would overflow the viewport (top bar ~32, taskbar ~40).
@@ -642,9 +640,6 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
     if (key === 'game2048') {
       return <Game2048 />;
     }
-    if (key === 'workflow') {
-      return <WorkflowSim />;
-    }
     if (key === 'guestbook') {
       return <Guestbook />;
     }
@@ -971,7 +966,6 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                   { key: 'youtube', label: 'retro_tv.app', Icon: Tv },
                   { key: 'snake', label: 'snake.game', Icon: Gamepad2 },
                   { key: 'game2048', label: '2048.game', Icon: Gamepad2 },
-                  { key: 'workflow', label: 'workflow.sim', Icon: Workflow },
                   { key: 'guestbook', label: 'guestbook.txt', Icon: BookText },
                   { key: 'quiz', label: 'stack.quiz', Icon: HelpCircle },
                 ].map((app) => (
@@ -1193,7 +1187,6 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
           else if (key === 'youtube') { iconName = 'retro_tv.app'; IconComponent = Tv; }
           else if (key === 'snake') { iconName = 'snake.game'; IconComponent = Gamepad2; }
           else if (key === 'game2048') { iconName = '2048.game'; IconComponent = Gamepad2; }
-          else if (key === 'workflow') { iconName = 'workflow.sim'; IconComponent = Workflow; }
           else if (key === 'guestbook') { iconName = 'guestbook.txt'; IconComponent = BookText; }
           else if (key === 'quiz') { iconName = 'stack.quiz'; IconComponent = HelpCircle; }
 
@@ -1290,7 +1283,6 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                     {key === 'youtube' && 'retro_tv.app'}
                     {key === 'snake' && 'snake.game'}
                     {key === 'game2048' && '2048.game'}
-                    {key === 'workflow' && 'workflow.sim'}
                     {key === 'guestbook' && 'guestbook.txt'}
                     {key === 'quiz' && 'stack.quiz'}
                   </span>
@@ -1580,7 +1572,6 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
 
                 {key === 'snake' && <SnakeGame />}
                 {key === 'game2048' && <Game2048 />}
-                {key === 'workflow' && <WorkflowSim />}
                 {key === 'guestbook' && <Guestbook />}
                 {key === 'quiz' && <StackQuiz />}
 
@@ -1899,7 +1890,6 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
             if (key === 'youtube') displayName = 'retro_tv.app';
             if (key === 'snake') displayName = 'snake.game';
             if (key === 'game2048') displayName = '2048.game';
-            if (key === 'workflow') displayName = 'workflow.sim';
             if (key === 'guestbook') displayName = 'guestbook.txt';
             if (key === 'quiz') displayName = 'stack.quiz';
 
