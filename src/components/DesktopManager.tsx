@@ -85,7 +85,7 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
 
   // YouTube player states
   const [ytUrl, setYtUrl] = useState('');
-  const [ytVideoId, setYtVideoId] = useState('5qap5aO4i9A'); // Default Apple System 7 commercial
+  const [ytVideoId, setYtVideoId] = useState('local'); // 'local' -> /video/retro.mp4, else a YouTube id
   const [tvTab, setTvTab] = useState<'presets' | 'search'>('presets');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -825,7 +825,17 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
       return (
         <div className="space-y-4 font-mono text-xs flex flex-col h-full bg-neutral-950 p-2 border border-foreground rounded">
           <div className="relative aspect-video w-full border border-foreground bg-black overflow-hidden rounded">
-            {ytVideoId ? (
+            {ytVideoId === 'local' ? (
+              <video
+                src="/video/retro.mp4"
+                autoPlay
+                loop
+                muted={isMuted}
+                playsInline
+                controls
+                className="absolute inset-0 w-full h-full object-cover grayscale brightness-90 contrast-110"
+              />
+            ) : ytVideoId ? (
               <iframe
                 src={`https://www.youtube.com/embed/${ytVideoId}?autoplay=1&mute=${isMuted ? 1 : 0}`}
                 title="Retro Channel Receiver"
@@ -844,6 +854,14 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
           <div className="flex-1 overflow-y-auto space-y-3 min-h-[140px] pt-1">
             <div className="font-bold border-b border-border pb-1 uppercase tracking-widest text-[10px] text-neutral-400">Presets & Channels</div>
             <div className="grid grid-cols-2 gap-1.5">
+              <button
+                onClick={() => { setYtVideoId('local'); playSound('open'); }}
+                className={`py-1.5 px-2 border rounded text-left transition-colors cursor-pointer text-[10px] ${
+                  ytVideoId === 'local' ? 'bg-foreground text-background font-bold' : 'hover:bg-muted text-foreground'
+                }`}
+              >
+                CH 0: My Reel
+              </button>
               <button
                 onClick={() => { setYtVideoId('5qap5aO4i9A'); playSound('open'); }}
                 className={`py-1.5 px-2 border rounded text-left transition-colors cursor-pointer text-[10px] ${
@@ -1579,7 +1597,17 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                   <div className="space-y-4 font-mono text-xs flex flex-col h-full bg-neutral-950 p-2 border border-foreground rounded">
                     {/* Retro TV Screen Bezel */}
                     <div className="relative border border-foreground bg-black rounded p-1 flex flex-col items-center justify-center overflow-hidden shrink-0">
-                      {ytVideoId ? (
+                      {ytVideoId === 'local' ? (
+                        <video
+                          src="/video/retro.mp4"
+                          autoPlay
+                          loop
+                          muted={isMuted}
+                          playsInline
+                          controls
+                          className="w-full h-[230px] rounded object-cover bg-black"
+                        />
+                      ) : ytVideoId ? (
                         <iframe
                           width="100%"
                           height="230px"
@@ -1656,6 +1684,14 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                           <div className="space-y-1">
                             <span className="text-[9px] uppercase font-bold text-muted-foreground">Preset Channels</span>
                             <div className="flex flex-wrap gap-1.5 pt-1">
+                              <button
+                                onClick={() => { setYtVideoId('local'); playSound('click'); }}
+                                className={`px-2 py-0.5 border text-[9px] rounded transition-colors cursor-pointer ${
+                                  ytVideoId === 'local' ? 'bg-foreground text-background border-foreground font-semibold' : 'border-border text-muted-foreground hover:text-foreground'
+                                }`}
+                              >
+                                CH 0: My Reel
+                              </button>
                               <button
                                 onClick={() => { setYtVideoId('5qap5aO4i9A'); playSound('click'); }}
                                 className={`px-2 py-0.5 border text-[9px] rounded transition-colors cursor-pointer ${
