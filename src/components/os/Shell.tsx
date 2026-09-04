@@ -8,6 +8,7 @@ import MobileBoot from './MobileBoot';
 import RadioPlayer from './RadioPlayer';
 import Screensaver from './Screensaver';
 import HitCounter from './HitCounter';
+import Bsod from './Bsod';
 import { hydrateSettings, setSetting } from '@/lib/os/settings';
 import { useIsMobile } from '@/lib/os/useIsMobile';
 
@@ -109,6 +110,7 @@ export default function Shell({ counts, children }: ShellProps) {
       {!booting && !isMobile && <RadioPlayer />}
       {!booting && !isMobile && <HitCounter />}
       {!booting && <Screensaver />}
+      <Bsod />
       {booting &&
         (isMobile ? (
           <MobileBoot counts={counts} onEnter={enterFullscreen} onDone={finishBoot} />

@@ -4,11 +4,13 @@ import { useState, useEffect, useRef } from 'react';
 import { 
   Folder, FileText, Terminal as TerminalIcon, Image as ImageIcon,
   User, Sliders, Menu, X, Minimize2, Mail, ExternalLink, ArrowUpRight,
-  Battery, BatteryCharging, Wifi, WifiOff, Volume2, VolumeX, Tv, Github, Linkedin, Gamepad2
+  Battery, BatteryCharging, Wifi, WifiOff, Volume2, VolumeX, Tv, Github, Linkedin, Gamepad2, Workflow
 } from 'lucide-react';
 import FloatingTerminal from './FloatingTerminal';
 import AsciiArtLab from './AsciiArtLab';
 import SnakeGame from './apps/SnakeGame';
+import Game2048 from './apps/Game2048';
+import WorkflowSim from './apps/WorkflowSim';
 import { about } from '@/lib/portfolioData';
 import ProjectList from './ProjectList';
 import { toast } from 'sonner';
@@ -44,7 +46,7 @@ interface DesktopManagerProps {
   achievements: Achievement[];
 }
 
-type WindowKey = 'about' | 'projects' | 'skills' | 'experience' | 'contact' | 'shell' | 'artlab' | 'youtube' | 'snake';
+type WindowKey = 'about' | 'projects' | 'skills' | 'experience' | 'contact' | 'shell' | 'artlab' | 'youtube' | 'snake' | 'game2048' | 'workflow';
 type FontOption = 'sans' | 'serif' | 'mono';
 type ThemeOption = 'ink' | 'paper' | 'sepia' | 'amber' | 'green' | 'c64';
 type DensityOption = 'standard' | 'compact';
@@ -279,9 +281,11 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
     artlab: { open: false, x: 0, y: 0, z: 1, width: '550px', height: '420px' },
     youtube: { open: false, x: 0, y: 0, z: 1, width: '560px', height: '440px' },
     snake: { open: false, x: 0, y: 0, z: 1, width: '440px', height: '520px' },
+    game2048: { open: false, x: 0, y: 0, z: 1, width: '380px', height: '520px' },
+    workflow: { open: false, x: 0, y: 0, z: 1, width: '520px', height: '480px' },
   });
 
-  type IconKey = 'about' | 'projects' | 'skills' | 'experience' | 'contact' | 'shell' | 'artlab' | 'youtube' | 'snake';
+  type IconKey = 'about' | 'projects' | 'skills' | 'experience' | 'contact' | 'shell' | 'artlab' | 'youtube' | 'snake' | 'game2048' | 'workflow';
   interface IconPosition { x: number; y: number; }
 
   const [iconPositions, setIconPositions] = useState<Record<IconKey, IconPosition>>({
@@ -294,6 +298,8 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
     artlab: { x: 24, y: 564 },
     youtube: { x: 24, y: 654 },
     snake: { x: 24, y: 744 },
+    game2048: { x: 24, y: 834 },
+    workflow: { x: 24, y: 924 },
   });
 
   const [topZ, setTopZ] = useState(10);
@@ -620,6 +626,12 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
     if (key === 'snake') {
       return <SnakeGame />;
     }
+    if (key === 'game2048') {
+      return <Game2048 />;
+    }
+    if (key === 'workflow') {
+      return <WorkflowSim />;
+    }
     if (key === 'about') {
       return (
         <div className="space-y-6 reader-content">
@@ -902,6 +914,8 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                   { key: 'artlab', label: 'art_lab.app', Icon: ImageIcon },
                   { key: 'youtube', label: 'retro_tv.app', Icon: Tv },
                   { key: 'snake', label: 'snake.game', Icon: Gamepad2 },
+                  { key: 'game2048', label: '2048.game', Icon: Gamepad2 },
+                  { key: 'workflow', label: 'workflow.sim', Icon: Workflow },
                 ].map((app) => (
                   <div
                     key={app.key}
@@ -1120,6 +1134,8 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
           else if (key === 'artlab') { iconName = 'art_lab.app'; IconComponent = ImageIcon; }
           else if (key === 'youtube') { iconName = 'retro_tv.app'; IconComponent = Tv; }
           else if (key === 'snake') { iconName = 'snake.game'; IconComponent = Gamepad2; }
+          else if (key === 'game2048') { iconName = '2048.game'; IconComponent = Gamepad2; }
+          else if (key === 'workflow') { iconName = 'workflow.sim'; IconComponent = Workflow; }
 
           return (
             <div
@@ -1213,6 +1229,8 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                     {key === 'artlab' && 'art_lab.app'}
                     {key === 'youtube' && 'retro_tv.app'}
                     {key === 'snake' && 'snake.game'}
+                    {key === 'game2048' && '2048.game'}
+                    {key === 'workflow' && 'workflow.sim'}
                   </span>
                 </div>
                 {/* Visual drag indicators */}
@@ -1499,6 +1517,8 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                 )}
 
                 {key === 'snake' && <SnakeGame />}
+                {key === 'game2048' && <Game2048 />}
+                {key === 'workflow' && <WorkflowSim />}
 
                 {key === 'youtube' && (
                   <div className="space-y-4 font-mono text-xs flex flex-col h-full bg-neutral-950 p-2 border border-foreground rounded">
@@ -1758,6 +1778,8 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                         artlab: { x: 24, y: 564 },
                         youtube: { x: 24, y: 654 },
                         snake: { x: 24, y: 744 },
+                        game2048: { x: 24, y: 834 },
+                        workflow: { x: 24, y: 924 },
                       });
                       toast.success("Desktop icons reset to default.");
                     }}
@@ -1796,6 +1818,14 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
 
           <span className="h-3 w-px bg-border hidden sm:inline" />
           <span className="text-[10px] text-muted-foreground hidden sm:inline">Active Session</span>
+          {/* hidden easter-egg pixel */}
+          <button
+            aria-hidden="true"
+            tabIndex={-1}
+            onClick={() => window.dispatchEvent(new CustomEvent('zhuday:bsod'))}
+            className="h-[6px] w-[6px] rounded-full bg-border/40 hover:bg-red-500/70 transition-colors"
+            title=" "
+          />
         </div>
 
         {/* Taskbar Buttons (One for each app window) */}
@@ -1816,6 +1846,8 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
             if (key === 'artlab') displayName = 'art_lab.app';
             if (key === 'youtube') displayName = 'retro_tv.app';
             if (key === 'snake') displayName = 'snake.game';
+            if (key === 'game2048') displayName = '2048.game';
+            if (key === 'workflow') displayName = 'workflow.sim';
 
             return (
               <button

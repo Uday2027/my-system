@@ -251,6 +251,12 @@ Self-destruct sequence initiated... Just kidding! Access authorized.`,
         setShowMatrix(true);
         break;
 
+      case 'bsod':
+      case 'crash':
+        window.dispatchEvent(new CustomEvent('zhuday:bsod'));
+        setHistory((prev) => [...prev, { text: 'triggering kernel panic ...', type: 'error' }]);
+        break;
+
       case 'game':
         const targetNumber = Math.floor(Math.random() * 100) + 1;
         setGameState({ active: true, target: targetNumber, attempts: 0 });
