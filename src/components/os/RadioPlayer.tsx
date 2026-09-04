@@ -6,8 +6,8 @@ import { useSettings, setSetting } from '@/lib/os/settings';
 
 // Playlist — drop more files in public/audio/ and add them here.
 const TRACKS = [
+  { src: '/audio/song.mp3', name: 'track 1' },
   { src: '/audio/lofi.mp3', name: 'lo-fi' },
-  { src: '/audio/song.mp3', name: 'track 2' },
 ];
 
 /**
