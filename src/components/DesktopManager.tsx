@@ -86,6 +86,18 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
   // YouTube player states
   const [ytUrl, setYtUrl] = useState('');
   const [ytVideoId, setYtVideoId] = useState('local'); // 'local' -> /video/retro.mp4, else a YouTube id
+  // Retro-TV local video: starts muted (mobile autoplay policy), user taps to unmute.
+  const retroVideoRef = useRef<HTMLVideoElement>(null);
+  const [tvMuted, setTvMuted] = useState(true);
+  const unmuteTv = () => {
+    const v = retroVideoRef.current;
+    if (v) {
+      v.muted = false;
+      v.volume = 1;
+      v.play().catch(() => {});
+    }
+    setTvMuted(false);
+  };
   const [tvTab, setTvTab] = useState<'presets' | 'search'>('presets');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -826,15 +838,27 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
         <div className="space-y-4 font-mono text-xs flex flex-col h-full bg-neutral-950 p-2 border border-foreground rounded">
           <div className="relative aspect-video w-full border border-foreground bg-black overflow-hidden rounded">
             {ytVideoId === 'local' ? (
-              <video
-                src="/video/retro.mp4"
-                autoPlay
-                loop
-                muted={isMuted}
-                playsInline
-                controls
-                className="absolute inset-0 w-full h-full object-cover grayscale brightness-90 contrast-110"
-              />
+              <>
+                <video
+                  ref={retroVideoRef}
+                  src="/video/retro.mp4"
+                  autoPlay
+                  loop
+                  muted={tvMuted}
+                  playsInline
+                  controls
+                  onVolumeChange={() => setTvMuted(!!retroVideoRef.current?.muted)}
+                  className="absolute inset-0 w-full h-full object-cover grayscale brightness-90 contrast-110"
+                />
+                {tvMuted && (
+                  <button
+                    onClick={unmuteTv}
+                    className="absolute inset-0 z-10 flex items-center justify-center bg-black/40 text-[10px] font-bold uppercase tracking-widest text-white"
+                  >
+                    <span className="rounded border border-white/60 px-3 py-1.5">🔊 tap for sound</span>
+                  </button>
+                )}
+              </>
             ) : ytVideoId ? (
               <iframe
                 src={`https://www.youtube.com/embed/${ytVideoId}?autoplay=1&mute=${isMuted ? 1 : 0}`}
@@ -1598,15 +1622,27 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                     {/* Retro TV Screen Bezel */}
                     <div className="relative border border-foreground bg-black rounded p-1 flex flex-col items-center justify-center overflow-hidden shrink-0">
                       {ytVideoId === 'local' ? (
-                        <video
-                          src="/video/retro.mp4"
-                          autoPlay
-                          loop
-                          muted={isMuted}
-                          playsInline
-                          controls
-                          className="w-full h-[230px] rounded object-cover bg-black"
-                        />
+                        <div className="relative w-full">
+                          <video
+                            ref={retroVideoRef}
+                            src="/video/retro.mp4"
+                            autoPlay
+                            loop
+                            muted={tvMuted}
+                            playsInline
+                            controls
+                            onVolumeChange={() => setTvMuted(!!retroVideoRef.current?.muted)}
+                            className="w-full h-[230px] rounded object-cover bg-black"
+                          />
+                          {tvMuted && (
+                            <button
+                              onClick={unmuteTv}
+                              className="absolute inset-0 z-10 flex items-center justify-center bg-black/40 text-[10px] font-bold uppercase tracking-widest text-white"
+                            >
+                              <span className="rounded border border-white/60 px-3 py-1.5">🔊 tap for sound</span>
+                            </button>
+                          )}
+                        </div>
                       ) : ytVideoId ? (
                         <iframe
                           width="100%"
