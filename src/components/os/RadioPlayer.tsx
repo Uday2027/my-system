@@ -1,32 +1,53 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Radio, Pause } from 'lucide-react';
+import { Radio, Pause, SkipForward } from 'lucide-react';
 import { useSettings, setSetting } from '@/lib/os/settings';
 
-const TRACK = '/audio/lofi.mp3';
+// Playlist — drop more files in public/audio/ and add them here.
+const TRACKS = [
+  { src: '/audio/lofi.mp3', name: 'lo-fi' },
+  { src: '/audio/song.mp3', name: 'track 2' },
+];
 
 /**
- * Small lo-fi radio widget, fixed bottom-right above the taskbar.
- * Off by default; remembers the on/off preference but never autoplays without
- * a user gesture (browser policy). Silently hides itself if the file 404s.
+ * Small radio widget, fixed bottom-right above the taskbar. Cycles through the
+ * playlist (advances on track end, wraps around; Skip jumps to the next).
+ * Off by default; remembers the on/off preference but never autoplays without a
+ * user gesture (browser policy). Hides itself if the first file 404s.
  */
 export default function RadioPlayer() {
   const { radio } = useSettings();
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [playing, setPlaying] = useState(false);
   const [available, setAvailable] = useState(true);
+  const [idx, setIdx] = useState(0);
 
   useEffect(() => {
     const a = audioRef.current;
     if (!a) return;
     a.volume = 0.35;
-    const onErr = () => setAvailable(false);
+    const onErr = () => {
+      if (idx === 0) setAvailable(false);
+    };
+    const onEnded = () => setIdx((i) => (i + 1) % TRACKS.length);
     a.addEventListener('error', onErr);
-    return () => a.removeEventListener('error', onErr);
-  }, []);
+    a.addEventListener('ended', onEnded);
+    return () => {
+      a.removeEventListener('error', onErr);
+      a.removeEventListener('ended', onEnded);
+    };
+  }, [idx]);
 
-  // If the stored preference is "on", start on the first user gesture anywhere.
+  // When the track index changes while playing, load + play the new one.
+  useEffect(() => {
+    const a = audioRef.current;
+    if (!a || !playing) return;
+    a.load();
+    a.play().catch(() => {});
+  }, [idx, playing]);
+
+  // Stored preference "on" -> start on the first user gesture anywhere.
   useEffect(() => {
     if (!radio || playing) return;
     const start = () => {
@@ -62,25 +83,36 @@ export default function RadioPlayer() {
     }
   };
 
+  const skip = () => setIdx((i) => (i + 1) % TRACKS.length);
+
   if (!available) return null;
+
+  const track = TRACKS[idx];
 
   return (
     <div className="fixed bottom-12 right-3 z-[99997] flex items-center gap-2 rounded-md border border-border bg-card/90 px-2 py-1 font-mono text-[10px] text-muted-foreground shadow-lg backdrop-blur-sm">
-      <audio ref={audioRef} src={TRACK} loop preload="none" />
+      <audio ref={audioRef} src={track.src} preload="none" />
       <button
         onClick={toggle}
         className="flex items-center gap-1.5 rounded px-1 py-0.5 text-foreground transition-colors hover:bg-foreground/10"
-        title={playing ? 'Pause lo-fi radio' : 'Play lo-fi radio'}
+        title={playing ? 'Pause radio' : 'Play radio'}
       >
         {playing ? <Pause className="h-3 w-3" /> : <Radio className="h-3 w-3" />}
-        <span className="uppercase tracking-wider">{playing ? 'lo-fi · on' : 'lo-fi radio'}</span>
+        <span className="uppercase tracking-wider">{playing ? `radio · ${track.name}` : 'radio'}</span>
       </button>
       {playing && (
-        <span className="flex items-end gap-[2px]" aria-hidden="true">
-          <span className="w-[2px] animate-pulse bg-foreground" style={{ height: 6, animationDelay: '0ms' }} />
-          <span className="w-[2px] animate-pulse bg-foreground" style={{ height: 10, animationDelay: '150ms' }} />
-          <span className="w-[2px] animate-pulse bg-foreground" style={{ height: 4, animationDelay: '300ms' }} />
-        </span>
+        <>
+          <span className="flex items-end gap-[2px]" aria-hidden="true">
+            <span className="w-[2px] animate-pulse bg-foreground" style={{ height: 6, animationDelay: '0ms' }} />
+            <span className="w-[2px] animate-pulse bg-foreground" style={{ height: 10, animationDelay: '150ms' }} />
+            <span className="w-[2px] animate-pulse bg-foreground" style={{ height: 4, animationDelay: '300ms' }} />
+          </span>
+          {TRACKS.length > 1 && (
+            <button onClick={skip} title="Next track" className="rounded px-0.5 text-foreground hover:bg-foreground/10">
+              <SkipForward className="h-3 w-3" />
+            </button>
+          )}
+        </>
       )}
     </div>
   );
