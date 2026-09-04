@@ -1,11 +1,14 @@
 'use client';
 
 import { useEffect, useState, type ReactNode } from 'react';
+import { toast } from 'sonner';
 import CrtOverlay from './CrtOverlay';
 import BootSequence from './BootSequence';
 import MobileBoot from './MobileBoot';
 import RadioPlayer from './RadioPlayer';
-import { hydrateSettings } from '@/lib/os/settings';
+import Screensaver from './Screensaver';
+import HitCounter from './HitCounter';
+import { hydrateSettings, setSetting } from '@/lib/os/settings';
 import { useIsMobile } from '@/lib/os/useIsMobile';
 
 const BOOT_KEY = 'zhuday.booted.v1';
@@ -64,6 +67,24 @@ export default function Shell({ counts, children }: ShellProps) {
     setBooting(false);
   };
 
+  // Konami code: ↑↑↓↓←→←→ B A  ->  CRT full + a wink
+  useEffect(() => {
+    const seq = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    let i = 0;
+    const onKey = (e: KeyboardEvent) => {
+      const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+      i = k === seq[i] ? i + 1 : k === seq[0] ? 1 : 0;
+      if (i === seq.length) {
+        i = 0;
+        setSetting('crt', 'full');
+        document.documentElement.classList.add('konami');
+        toast.success('🎮 CHEAT MODE — CRT maxed', { duration: 2500 });
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   // Sessions that skip the boot screen (returning visit / reduced-motion) still
   // get fullscreen on their first interaction with the page.
   useEffect(() => {
@@ -86,6 +107,8 @@ export default function Shell({ counts, children }: ShellProps) {
       <CrtOverlay />
       {children}
       {!booting && !isMobile && <RadioPlayer />}
+      {!booting && !isMobile && <HitCounter />}
+      {!booting && <Screensaver />}
       {booting &&
         (isMobile ? (
           <MobileBoot counts={counts} onEnter={enterFullscreen} onDone={finishBoot} />

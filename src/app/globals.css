@@ -192,6 +192,30 @@ body.theme-sepia {
   --border: rgba(67, 52, 34, 0.15);
   --muted-foreground: #7c6853;
 }
+body.theme-amber {
+  --background: #1a1100;
+  --foreground: #ffb84d;
+  --card: #241800;
+  --card-foreground: #ffb84d;
+  --border: rgba(255, 184, 77, 0.18);
+  --muted-foreground: #b3813a;
+}
+body.theme-green {
+  --background: #001200;
+  --foreground: #7dff7d;
+  --card: #002200;
+  --card-foreground: #7dff7d;
+  --border: rgba(125, 255, 125, 0.18);
+  --muted-foreground: #4fae4f;
+}
+body.theme-c64 {
+  --background: #3e31a2;
+  --foreground: #b6a8ff;
+  --card: #4a3cc0;
+  --card-foreground: #ffffff;
+  --border: rgba(182, 168, 255, 0.25);
+  --muted-foreground: #9a8ce6;
+}
 
 /* Base transitions for smooth switching */
 body {
@@ -331,6 +355,15 @@ body.density-compact .reader-content hr {
   0% { filter: brightness(1); }
   35% { filter: brightness(6) saturate(0); background: #fff; }
   100% { filter: brightness(1); opacity: 0; }
+}
+
+/* Konami cheat mode — faint animated hue on the CRT layers */
+.konami .crt-root {
+  animation: konami-hue 6s linear infinite;
+}
+@keyframes konami-hue {
+  from { filter: hue-rotate(0deg); }
+  to { filter: hue-rotate(360deg); }
 }
 
 .crt-caret {

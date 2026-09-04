@@ -46,7 +46,7 @@ interface DesktopManagerProps {
 
 type WindowKey = 'about' | 'projects' | 'skills' | 'experience' | 'contact' | 'shell' | 'artlab' | 'youtube' | 'snake';
 type FontOption = 'sans' | 'serif' | 'mono';
-type ThemeOption = 'ink' | 'paper' | 'sepia';
+type ThemeOption = 'ink' | 'paper' | 'sepia' | 'amber' | 'green' | 'c64';
 type DensityOption = 'standard' | 'compact';
 
 interface WindowState {
@@ -351,7 +351,7 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
     const body = document.body;
     body.classList.remove(
       'font-sans', 'font-serif', 'font-mono',
-      'theme-ink', 'theme-paper', 'theme-sepia',
+      'theme-ink', 'theme-paper', 'theme-sepia', 'theme-amber', 'theme-green', 'theme-c64',
       'density-standard', 'density-compact'
     );
     body.classList.add(`font-${font}`);
@@ -466,6 +466,18 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
     }));
     setActiveWindow(key);
   };
+
+  // `open <app>` command from terminal.sh
+  useEffect(() => {
+    const onOpen = (e: Event) => {
+      const key = (e as CustomEvent).detail as WindowKey;
+      if (window.innerWidth < 768) setOpenMobileApp(key);
+      else openWindow(key);
+    };
+    window.addEventListener('zhuday:open-window', onOpen as EventListener);
+    return () => window.removeEventListener('zhuday:open-window', onOpen as EventListener);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Drag handler definitions
   const handleMouseDown = (e: React.MouseEvent, key: WindowKey) => {
@@ -989,7 +1001,7 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
             <div className="relative group py-1">
               <span className="hover:text-foreground cursor-pointer">Page Tone</span>
               <div className="absolute left-0 mt-1 hidden group-hover:block bg-neutral-900 border border-white/5 rounded shadow-2xl p-1 w-28 z-[10001]">
-                {(['ink', 'paper', 'sepia'] as ThemeOption[]).map((t) => (
+                {(['ink', 'paper', 'sepia', 'amber', 'green', 'c64'] as ThemeOption[]).map((t) => (
                   <div
                     key={t}
                     onClick={() => setTheme(t)}

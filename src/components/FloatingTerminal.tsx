@@ -183,12 +183,21 @@ export default function FloatingTerminal({
   skills      - List my skills & core technologies
   experience  - List my work experience & accomplishments
   contact     - View my email and social links
+  open <app>  - Open a window (projects, skills, snake, ...)
+  ls / pwd    - List apps / print working directory
+  whoami      - Who is this
+  hire        - Run the hire sequence
+  date        - Current date & time
+  echo <text> - Print text
+  history     - Show command history
   neofetch    - Show system parameters & ASCII art
   matrix      - Run interactive binary code rain
   game        - Play a number guessing game
   sudo        - Request superuser permissions
   clear       - Clear terminal screen
-  help        - Display this menu`,
+  help        - Display this menu
+
+  psst — try the Konami code anywhere on the site.`,
             type: 'output',
           },
         ]);
@@ -329,6 +338,74 @@ Core expertise: React, Next.js, Node.js, TypeScript, SQL/ORM databases.`,
       case 'clear':
         setHistory([]);
         break;
+
+      case 'whoami':
+        setHistory((prev) => [
+          ...prev,
+          { text: 'uday — software & automation engineer. builds systems that keep working as the business grows.', type: 'output' },
+        ]);
+        break;
+
+      case 'ls':
+      case 'dir':
+        setHistory((prev) => [
+          ...prev,
+          {
+            text: `about_me.txt   projects.dir   skills.stack   experience.dir
+contact.card   terminal.sh    art_lab.app    retro_tv.app   snake.game`,
+            type: 'output',
+          },
+        ]);
+        break;
+
+      case 'date':
+        setHistory((prev) => [...prev, { text: new Date().toString(), type: 'output' }]);
+        break;
+
+      case 'pwd':
+        setHistory((prev) => [...prev, { text: '/home/uday/portfolio', type: 'output' }]);
+        break;
+
+      case 'echo':
+        setHistory((prev) => [...prev, { text: trimmed.slice(5) || '', type: 'output' }]);
+        break;
+
+      case 'history':
+        setHistory((prev) => [
+          ...prev,
+          { text: commandHistory.map((c, i) => `  ${i + 1}  ${c}`).join('\n') || '  (empty)', type: 'output' },
+        ]);
+        break;
+
+      case 'hire':
+      case 'hire-me':
+        setHistory((prev) => [
+          ...prev,
+          {
+            text: `> initiating hire sequence...
+  [OK]  reliability .......... verified
+  [OK]  maintainability ...... verified
+  [OK]  business impact ...... verified
+  ready. email zubayerhossain1009@gmail.com — let's talk.`,
+            type: 'output',
+          },
+        ]);
+        break;
+
+      case 'open': {
+        const key = parts[1];
+        const valid = ['about', 'projects', 'skills', 'experience', 'contact', 'shell', 'artlab', 'youtube', 'snake'];
+        if (valid.includes(key)) {
+          window.dispatchEvent(new CustomEvent('zhuday:open-window', { detail: key }));
+          setHistory((prev) => [...prev, { text: `opening ${key} ...`, type: 'system' }]);
+        } else {
+          setHistory((prev) => [
+            ...prev,
+            { text: `open: unknown target "${key || ''}". try: about, projects, skills, experience, contact, shell, artlab, youtube, snake`, type: 'error' },
+          ]);
+        }
+        break;
+      }
 
       default:
         setHistory((prev) => [

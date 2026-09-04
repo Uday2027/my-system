@@ -7,7 +7,7 @@
  */
 import { useSyncExternalStore } from 'react';
 
-export type Tone = 'ink' | 'paper' | 'sepia';
+export type Tone = 'ink' | 'paper' | 'sepia' | 'amber' | 'green' | 'c64';
 export type Typography = 'sans' | 'serif' | 'mono';
 export type Density = 'standard' | 'compact';
 export type Crt = 'off' | 'subtle' | 'full';
