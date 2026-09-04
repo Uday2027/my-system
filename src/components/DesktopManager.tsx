@@ -4,13 +4,15 @@ import { useState, useEffect, useRef } from 'react';
 import { 
   Folder, FileText, Terminal as TerminalIcon, Image as ImageIcon,
   User, Sliders, Menu, X, Minimize2, Mail, ExternalLink, ArrowUpRight,
-  Battery, BatteryCharging, Wifi, WifiOff, Volume2, VolumeX, Tv, Github, Linkedin, Gamepad2, Workflow
+  Battery, BatteryCharging, Wifi, WifiOff, Volume2, VolumeX, Tv, Github, Linkedin, Gamepad2, Workflow, BookText, HelpCircle
 } from 'lucide-react';
 import FloatingTerminal from './FloatingTerminal';
 import AsciiArtLab from './AsciiArtLab';
 import SnakeGame from './apps/SnakeGame';
 import Game2048 from './apps/Game2048';
 import WorkflowSim from './apps/WorkflowSim';
+import Guestbook from './apps/Guestbook';
+import StackQuiz from './apps/StackQuiz';
 import { about } from '@/lib/portfolioData';
 import ProjectList from './ProjectList';
 import { toast } from 'sonner';
@@ -46,7 +48,7 @@ interface DesktopManagerProps {
   achievements: Achievement[];
 }
 
-type WindowKey = 'about' | 'projects' | 'skills' | 'experience' | 'contact' | 'shell' | 'artlab' | 'youtube' | 'snake' | 'game2048' | 'workflow';
+type WindowKey = 'about' | 'projects' | 'skills' | 'experience' | 'contact' | 'shell' | 'artlab' | 'youtube' | 'snake' | 'game2048' | 'workflow' | 'guestbook' | 'quiz';
 type FontOption = 'sans' | 'serif' | 'mono';
 type ThemeOption = 'ink' | 'paper' | 'sepia' | 'amber' | 'green' | 'c64';
 type DensityOption = 'standard' | 'compact';
@@ -283,9 +285,11 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
     snake: { open: false, x: 0, y: 0, z: 1, width: '440px', height: '520px' },
     game2048: { open: false, x: 0, y: 0, z: 1, width: '380px', height: '520px' },
     workflow: { open: false, x: 0, y: 0, z: 1, width: '520px', height: '480px' },
+    guestbook: { open: false, x: 0, y: 0, z: 1, width: '420px', height: '460px' },
+    quiz: { open: false, x: 0, y: 0, z: 1, width: '460px', height: '460px' },
   });
 
-  type IconKey = 'about' | 'projects' | 'skills' | 'experience' | 'contact' | 'shell' | 'artlab' | 'youtube' | 'snake' | 'game2048' | 'workflow';
+  type IconKey = 'about' | 'projects' | 'skills' | 'experience' | 'contact' | 'shell' | 'artlab' | 'youtube' | 'snake' | 'game2048' | 'workflow' | 'guestbook' | 'quiz';
   interface IconPosition { x: number; y: number; }
 
   const [iconPositions, setIconPositions] = useState<Record<IconKey, IconPosition>>({
@@ -300,6 +304,8 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
     snake: { x: 24, y: 744 },
     game2048: { x: 24, y: 834 },
     workflow: { x: 24, y: 924 },
+    guestbook: { x: 24, y: 1014 },
+    quiz: { x: 24, y: 1104 },
   });
 
   const [topZ, setTopZ] = useState(10);
@@ -632,6 +638,12 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
     if (key === 'workflow') {
       return <WorkflowSim />;
     }
+    if (key === 'guestbook') {
+      return <Guestbook />;
+    }
+    if (key === 'quiz') {
+      return <StackQuiz />;
+    }
     if (key === 'about') {
       return (
         <div className="space-y-6 reader-content">
@@ -916,6 +928,8 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                   { key: 'snake', label: 'snake.game', Icon: Gamepad2 },
                   { key: 'game2048', label: '2048.game', Icon: Gamepad2 },
                   { key: 'workflow', label: 'workflow.sim', Icon: Workflow },
+                  { key: 'guestbook', label: 'guestbook.txt', Icon: BookText },
+                  { key: 'quiz', label: 'stack.quiz', Icon: HelpCircle },
                 ].map((app) => (
                   <div
                     key={app.key}
@@ -1136,6 +1150,8 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
           else if (key === 'snake') { iconName = 'snake.game'; IconComponent = Gamepad2; }
           else if (key === 'game2048') { iconName = '2048.game'; IconComponent = Gamepad2; }
           else if (key === 'workflow') { iconName = 'workflow.sim'; IconComponent = Workflow; }
+          else if (key === 'guestbook') { iconName = 'guestbook.txt'; IconComponent = BookText; }
+          else if (key === 'quiz') { iconName = 'stack.quiz'; IconComponent = HelpCircle; }
 
           return (
             <div
@@ -1231,6 +1247,8 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                     {key === 'snake' && 'snake.game'}
                     {key === 'game2048' && '2048.game'}
                     {key === 'workflow' && 'workflow.sim'}
+                    {key === 'guestbook' && 'guestbook.txt'}
+                    {key === 'quiz' && 'stack.quiz'}
                   </span>
                 </div>
                 {/* Visual drag indicators */}
@@ -1519,6 +1537,8 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                 {key === 'snake' && <SnakeGame />}
                 {key === 'game2048' && <Game2048 />}
                 {key === 'workflow' && <WorkflowSim />}
+                {key === 'guestbook' && <Guestbook />}
+                {key === 'quiz' && <StackQuiz />}
 
                 {key === 'youtube' && (
                   <div className="space-y-4 font-mono text-xs flex flex-col h-full bg-neutral-950 p-2 border border-foreground rounded">
@@ -1780,6 +1800,8 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                         snake: { x: 24, y: 744 },
                         game2048: { x: 24, y: 834 },
                         workflow: { x: 24, y: 924 },
+                        guestbook: { x: 24, y: 1014 },
+                        quiz: { x: 24, y: 1104 },
                       });
                       toast.success("Desktop icons reset to default.");
                     }}
@@ -1848,6 +1870,8 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
             if (key === 'snake') displayName = 'snake.game';
             if (key === 'game2048') displayName = '2048.game';
             if (key === 'workflow') displayName = 'workflow.sim';
+            if (key === 'guestbook') displayName = 'guestbook.txt';
+            if (key === 'quiz') displayName = 'stack.quiz';
 
             return (
               <button
