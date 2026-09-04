@@ -292,21 +292,27 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
   type IconKey = 'about' | 'projects' | 'skills' | 'experience' | 'contact' | 'shell' | 'artlab' | 'youtube' | 'snake' | 'game2048' | 'workflow' | 'guestbook' | 'quiz';
   interface IconPosition { x: number; y: number; }
 
-  const [iconPositions, setIconPositions] = useState<Record<IconKey, IconPosition>>({
-    about: { x: 24, y: 24 },
-    projects: { x: 24, y: 114 },
-    skills: { x: 24, y: 204 },
-    experience: { x: 24, y: 294 },
-    contact: { x: 24, y: 384 },
-    shell: { x: 24, y: 474 },
-    artlab: { x: 24, y: 564 },
-    youtube: { x: 24, y: 654 },
-    snake: { x: 24, y: 744 },
-    game2048: { x: 24, y: 834 },
-    workflow: { x: 24, y: 924 },
-    guestbook: { x: 24, y: 1014 },
-    quiz: { x: 24, y: 1104 },
-  });
+  const ICON_ORDER: IconKey[] = ['about', 'projects', 'skills', 'experience', 'contact', 'shell', 'artlab', 'youtube', 'snake', 'game2048', 'workflow', 'guestbook', 'quiz'];
+
+  // Grid-flow layout: fill a column top->bottom, wrap to the next column when
+  // it would overflow the viewport (top bar ~32, taskbar ~40).
+  const computeIconLayout = (viewportH: number): Record<IconKey, IconPosition> => {
+    const stepY = 90;
+    const stepX = 96;
+    const perCol = Math.max(4, Math.floor((viewportH - 96) / stepY));
+    const out = {} as Record<IconKey, IconPosition>;
+    ICON_ORDER.forEach((k, i) => {
+      out[k] = { x: 24 + Math.floor(i / perCol) * stepX, y: 24 + (i % perCol) * stepY };
+    });
+    return out;
+  };
+
+  const [iconPositions, setIconPositions] = useState<Record<IconKey, IconPosition>>(() => computeIconLayout(900));
+
+  useEffect(() => {
+    setIconPositions(computeIconLayout(window.innerHeight));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [topZ, setTopZ] = useState(10);
   const dragInfoRef = useRef<{ key: WindowKey; startX: number; startY: number; startWindowX: number; startWindowY: number } | null>(null);
@@ -1788,21 +1794,7 @@ export default function DesktopManager({ projects, skills, achievements }: Deskt
                   <button
                     onClick={() => {
                       setIsSystemMenuOpen(false);
-                      setIconPositions({
-                        about: { x: 24, y: 24 },
-                        projects: { x: 24, y: 114 },
-                        skills: { x: 24, y: 204 },
-                        experience: { x: 24, y: 294 },
-                        contact: { x: 24, y: 384 },
-                        shell: { x: 24, y: 474 },
-                        artlab: { x: 24, y: 564 },
-                        youtube: { x: 24, y: 654 },
-                        snake: { x: 24, y: 744 },
-                        game2048: { x: 24, y: 834 },
-                        workflow: { x: 24, y: 924 },
-                        guestbook: { x: 24, y: 1014 },
-                        quiz: { x: 24, y: 1104 },
-                      });
+                      setIconPositions(computeIconLayout(window.innerHeight));
                       toast.success("Desktop icons reset to default.");
                     }}
                     className="w-full text-left px-2.5 py-1.5 hover:bg-white hover:text-black cursor-pointer rounded transition-colors text-white"

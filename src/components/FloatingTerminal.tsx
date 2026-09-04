@@ -73,6 +73,7 @@ export default function FloatingTerminal({
   // Easter Egg States
   const [showMatrix, setShowMatrix] = useState(false);
   const [gameState, setGameState] = useState<GameState>({ active: false, target: 0, attempts: 0 });
+  const [advActive, setAdvActive] = useState(false);
 
   const terminalEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -168,6 +169,10 @@ export default function FloatingTerminal({
       handleGameInput(trimmed);
       return;
     }
+    if (advActive) {
+      handleAdventure(trimmed);
+      return;
+    }
 
     const parts = trimmed.toLowerCase().split(' ');
     const command = parts[0];
@@ -192,7 +197,9 @@ export default function FloatingTerminal({
   history     - Show command history
   neofetch    - Show system parameters & ASCII art
   matrix      - Run interactive binary code rain
+  adventure   - A very short text adventure
   game        - Play a number guessing game
+  bsod        - Trigger a kernel panic (harmless)
   sudo        - Request superuser permissions
   clear       - Clear terminal screen
   help        - Display this menu
@@ -255,6 +262,25 @@ Self-destruct sequence initiated... Just kidding! Access authorized.`,
       case 'crash':
         window.dispatchEvent(new CustomEvent('zhuday:bsod'));
         setHistory((prev) => [...prev, { text: 'triggering kernel panic ...', type: 'error' }]);
+        break;
+
+      case 'adventure':
+        setAdvActive(true);
+        setHistory((prev) => [
+          ...prev,
+          {
+            text: `~ THE CONTRACT ~
+You're in a dim office. A recruiter slides a laptop across the desk.
+"Ship this by Friday," they say. On screen: 40 manual steps.
+
+  1) open the automation editor and wire it up
+  2) grind through the 40 steps by hand, this once
+  3) ask what the process is actually for
+
+Type 1, 2, or 3.`,
+            type: 'system',
+          },
+        ]);
         break;
 
       case 'game':
@@ -419,6 +445,33 @@ contact.card   terminal.sh    art_lab.app    retro_tv.app   snake.game`,
           { text: `Command not found: "${command}". Type "help" for a list of commands.`, type: 'error' },
         ]);
         break;
+    }
+  };
+
+  const handleAdventure = (choice: string) => {
+    const endings: Record<string, string> = {
+      '1': `You build it in an afternoon. Friday comes; the 40 steps run themselves.
+The recruiter blinks. "Do that again for the other 12 teams."  → you're hired.`,
+      '2': `You finish at 3am. It works once. Next week the process changed and
+it all breaks. Lesson logged: shipping once is easy; staying shipped isn't.`,
+      '3': `Turns out 22 of the 40 steps existed to fix a report nobody reads.
+You delete the report. The task is now 6 steps. Everyone's happier.  → hired.`,
+    };
+    const key = choice.trim().toLowerCase();
+    if (key === 'exit' || key === 'quit') {
+      setAdvActive(false);
+      setHistory((prev) => [...prev, { text: 'left the office. back to the shell.', type: 'system' }]);
+      return;
+    }
+    if (endings[key]) {
+      setAdvActive(false);
+      setHistory((prev) => [
+        ...prev,
+        { text: endings[key], type: 'output' },
+        { text: 'THE END — type "adventure" to replay, or "hire" for the real thing.', type: 'system' },
+      ]);
+    } else {
+      setHistory((prev) => [...prev, { text: 'type 1, 2, 3 — or "exit".', type: 'error' }]);
     }
   };
 

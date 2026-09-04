@@ -9,6 +9,7 @@ import RadioPlayer from './RadioPlayer';
 import Screensaver from './Screensaver';
 import HitCounter from './HitCounter';
 import Bsod from './Bsod';
+import Helper from './Helper';
 import { hydrateSettings, setSetting } from '@/lib/os/settings';
 import { useIsMobile } from '@/lib/os/useIsMobile';
 
@@ -110,6 +111,7 @@ export default function Shell({ counts, children }: ShellProps) {
       {!booting && !isMobile && <RadioPlayer />}
       {!booting && !isMobile && <HitCounter />}
       {!booting && <Screensaver />}
+      {!booting && !isMobile && <Helper />}
       <Bsod />
       {booting &&
         (isMobile ? (
